@@ -11,8 +11,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@/components/ui/sidebar";
 import { signOutAction } from "@/data/auth/sign-out";
-import { User } from "@supabase/supabase-js";
-import { ChevronUp, Home, Lock, LogOut, Settings } from "lucide-react";
+import { User as SupabaseUser } from "@supabase/supabase-js";
+import { ChevronUp, Home, Lock, LogOut, Package, Settings, Shield, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
@@ -23,6 +23,16 @@ const navigationItems: { title: string; url: string; icon: React.ElementType }[]
     icon: Home,
   },
   {
+    title: 'My Listings',
+    url: '/dashboard/listings',
+    icon: Package,
+  },
+  {
+    title: 'Profile',
+    url: '/dashboard/profile',
+    icon: UserIcon,
+  },
+  {
     title: 'Private Items',
     url: '/private-items',
     icon: Lock,
@@ -31,9 +41,16 @@ const navigationItems: { title: string; url: string; icon: React.ElementType }[]
 
 
 
-export function AppSidebarContent({ user }: { user: User }) {
+export function AppSidebarContent({ user, isAdmin = false }: { user: SupabaseUser; isAdmin?: boolean }) {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+
+  const items = [
+    ...navigationItems,
+    ...(isAdmin
+      ? [{ title: 'Admin', url: '/dashboard/admin', icon: Shield }]
+      : []),
+  ];
 
   function handleSignOut() {
     startTransition(async () => {
@@ -54,7 +71,7 @@ export function AppSidebarContent({ user }: { user: User }) {
       <SidebarGroupLabel>Navigation</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {navigationItems.map((item) => {
+          {items.map((item) => {
             const isActive = pathname === item.url;
             const Icon = item.icon;
             return (
@@ -117,9 +134,11 @@ export function AppSidebarContent({ user }: { user: User }) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/profile">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Profile settings
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut} disabled={isPending}>

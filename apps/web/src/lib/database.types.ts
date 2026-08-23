@@ -107,6 +107,279 @@ export type Database = {
         }
         Relationships: []
       }
+      categories: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          parent_id: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          parent_id?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          parent_id?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          id: string
+          email: string
+          full_name: string | null
+          avatar_url: string | null
+          role: 'buyer' | 'seller' | 'admin'
+          company_name: string | null
+          phone: string | null
+          country: string | null
+          city: string | null
+          bio: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          email: string
+          full_name?: string | null
+          avatar_url?: string | null
+          role?: 'buyer' | 'seller' | 'admin'
+          company_name?: string | null
+          phone?: string | null
+          country?: string | null
+          city?: string | null
+          bio?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          full_name?: string | null
+          avatar_url?: string | null
+          role?: 'buyer' | 'seller' | 'admin'
+          company_name?: string | null
+          phone?: string | null
+          country?: string | null
+          city?: string | null
+          bio?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      suppliers: {
+        Row: {
+          id: string
+          slug: string
+          name: string
+          verified: boolean
+          country: string
+          city: string
+          years_in_business: number
+          response_rate: string
+          main_products: string
+          description: string
+          banner_url: string | null
+          owner_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          name: string
+          verified?: boolean
+          country: string
+          city: string
+          years_in_business?: number
+          response_rate?: string
+          main_products?: string
+          description?: string
+          banner_url?: string | null
+          owner_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          name?: string
+          verified?: boolean
+          country?: string
+          city?: string
+          years_in_business?: number
+          response_rate?: string
+          main_products?: string
+          description?: string
+          banner_url?: string | null
+          owner_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          id: string
+          slug: string
+          title: string
+          price: number
+          currency: string
+          moq: number
+          max_order_qty: number | null
+          sold_count: number | null
+          is_local: boolean
+          status: 'draft' | 'published' | 'archived'
+          unit: string
+          image_url: string
+          images: Json
+          category_id: string | null
+          supplier_id: string
+          description: string
+          specs: Json
+          price_tiers: Json | null
+          lead_time_days: number | null
+          payment_terms: string | null
+          shipping_info: Json
+          attributes: Json
+          variants: Json
+          sample_available: boolean
+          customization_available: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          title: string
+          price: number
+          currency?: string
+          moq?: number
+          max_order_qty?: number | null
+          sold_count?: number | null
+          is_local?: boolean
+          status?: 'draft' | 'published' | 'archived'
+          unit?: string
+          image_url: string
+          images?: Json
+          category_id?: string | null
+          supplier_id: string
+          description?: string
+          specs?: Json
+          price_tiers?: Json | null
+          lead_time_days?: number | null
+          payment_terms?: string | null
+          shipping_info?: Json
+          attributes?: Json
+          variants?: Json
+          sample_available?: boolean
+          customization_available?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          title?: string
+          price?: number
+          currency?: string
+          moq?: number
+          max_order_qty?: number | null
+          sold_count?: number | null
+          is_local?: boolean
+          status?: 'draft' | 'published' | 'archived'
+          unit?: string
+          image_url?: string
+          images?: Json
+          category_id?: string | null
+          supplier_id?: string
+          description?: string
+          specs?: Json
+          price_tiers?: Json | null
+          lead_time_days?: number | null
+          payment_terms?: string | null
+          shipping_info?: Json
+          attributes?: Json
+          variants?: Json
+          sample_available?: boolean
+          customization_available?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inquiries: {
+        Row: {
+          id: string
+          product_id: string | null
+          supplier_id: string | null
+          user_id: string | null
+          message: string
+          quantity: number | null
+          contact_email: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          product_id?: string | null
+          supplier_id?: string | null
+          user_id?: string | null
+          message: string
+          quantity?: number | null
+          contact_email: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string | null
+          supplier_id?: string | null
+          user_id?: string | null
+          message?: string
+          quantity?: number | null
+          contact_email?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inquiries_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inquiries_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

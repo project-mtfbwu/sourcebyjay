@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 40" fill="none">
+  <rect x="0" y="4" width="32" height="32" rx="8" fill="#76EE59"/>
+  <path d="M8 20 L16 12 L24 20 L16 28 Z" fill="#1a1a1a"/>
+  <text x="40" y="27" font-family="Roboto, Arial, sans-serif" font-size="22" font-weight="700" fill="#1a1a1a">SourceByJay</text>
+  <text x="40" y="38" font-family="Roboto, Arial, sans-serif" font-size="9" font-weight="400" fill="#666666">#listingInProgress</text>
+</svg>

@@ -149,7 +149,7 @@ export function Login({
                 <CardHeader className="py-6 px-0">
                   <CardTitle>
                     <ShinyText
-                      text="Login to NextBase"
+                      text="Login to SourceByJay"
                       className="text-xl"
                       color="var(--foreground)"
                       shineColor="var(--primary)"
@@ -179,7 +179,7 @@ export function Login({
                 <CardHeader className="py-6 px-0">
                   <CardTitle>
                     <ShinyText
-                      text="Login to NextBase"
+                      text="Login to SourceByJay"
                       className="text-xl"
                       color="var(--foreground)"
                       shineColor="var(--primary)"
@@ -203,7 +203,7 @@ export function Login({
                 <CardHeader className="py-6 px-0">
                   <CardTitle>
                     <ShinyText
-                      text="Login to NextBase"
+                      text="Login to SourceByJay"
                       className="text-xl"
                       color="var(--foreground)"
                       shineColor="var(--primary)"

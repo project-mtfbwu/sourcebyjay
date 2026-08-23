@@ -1,5 +1,7 @@
 import '@/styles/globals.css';
+import '@/styles/marketplace.css';
 import localFont from 'next/font/local';
+import { Roboto } from 'next/font/google';
 import { DynamicLayoutProviders } from './DynamicLayoutProviders';
 import { ClientLayout } from './ClientLayout';
 
@@ -23,14 +25,21 @@ const robotoMono = localFont({
   display: 'swap',
 });
 
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-roboto',
+  display: 'swap',
+});
+
 export const metadata = {
-  title: 'Nextbase Open source starter',
-  description: 'Built with Next.js, Supabase, and Tailwind CSS',
+  title: 'SourceByJay — B2B Marketplace',
+  description: 'Source verified manufacturers and wholesale products on SourceByJay',
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${robotoMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${robotoMono.variable} ${roboto.variable}`}>
       <head />
       <body>
         <DynamicLayoutProviders>

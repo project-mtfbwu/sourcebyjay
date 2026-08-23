@@ -1,0 +1,43 @@
+:root {
+  --brand-primary: #76ee59;
+  --brand-primary-dark: #5bc742;
+  --brand-hero-from: #f3e8ff;
+  --brand-hero-via: #fce7f3;
+  --brand-hero-to: #e0e7ff;
+  --marketplace-nav-bg: #ffffff;
+  --marketplace-search-bg: #ffffff;
+  --marketplace-accent-orange: #ff6600;
+  --marketplace-text-muted: #666666;
+  --marketplace-border: #e5e5e5;
+  --radius-lg: 16px;
+}
+
+@theme inline {
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-dark: var(--brand-primary-dark);
+  --color-marketplace-accent: var(--marketplace-accent-orange);
+  --color-marketplace-muted: var(--marketplace-text-muted);
+  --radius-marketplace: var(--radius-lg);
+}
+
+.marketplace-hero-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--brand-hero-from) 0%,
+    var(--brand-hero-via) 45%,
+    var(--brand-hero-to) 100%
+  );
+}
+
+.marketplace-search-shadow {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.marketplace-card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.marketplace-card-hover:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
