@@ -2,6 +2,9 @@ import type { Json } from '@/lib/database.types';
 
 export type UserRole = 'buyer' | 'seller' | 'admin';
 export type ListingStatus = 'draft' | 'published' | 'archived';
+export type VerificationTier = 'none' | 'basic' | 'verified' | 'gold' | 'assessed';
+export type GalleryMediaType = 'factory' | 'showroom' | 'warehouse' | 'team' | 'certificate';
+export type MediaReviewStatus = 'pending' | 'approved' | 'rejected';
 
 export interface Profile {
   id: string;
@@ -28,6 +31,7 @@ export interface Supplier {
   slug: string;
   name: string;
   verified: boolean;
+  verificationTier: VerificationTier;
   country: string;
   city: string;
   yearsInBusiness: number;
@@ -37,6 +41,25 @@ export interface Supplier {
   logoUrl?: string;
   bannerUrl?: string;
   ownerId?: string | null;
+}
+
+export interface SupplierGalleryItem {
+  id: string;
+  supplierId: string;
+  mediaType: GalleryMediaType;
+  imageUrl: string;
+  caption?: string | null;
+  sortOrder: number;
+  status: MediaReviewStatus;
+}
+
+export interface SupplierCertificate {
+  id: string;
+  supplierId: string;
+  name: string;
+  fileUrl: string;
+  expiresAt?: string | null;
+  status: MediaReviewStatus;
 }
 
 export interface PriceTier {
@@ -95,6 +118,8 @@ export interface SearchFilters {
   maxPrice?: number;
   moq?: number;
   sort?: 'relevance' | 'price-asc' | 'price-desc' | 'moq-asc';
+  verified?: boolean;
+  gold?: boolean;
 }
 
 export interface ListingInput {

@@ -6,6 +6,7 @@ export const suppliers: Supplier[] = [
     slug: 'jaytech-industries',
     name: 'JayTech Industries Co.',
     verified: true,
+    verificationTier: 'gold',
     country: 'China',
     city: 'Shenzhen',
     yearsInBusiness: 12,
@@ -20,6 +21,7 @@ export const suppliers: Supplier[] = [
     slug: 'global-source-trading',
     name: 'Global Source Trading Ltd.',
     verified: true,
+    verificationTier: 'verified',
     country: 'India',
     city: 'Mumbai',
     yearsInBusiness: 8,
@@ -34,6 +36,7 @@ export const suppliers: Supplier[] = [
     slug: 'precision-parts-co',
     name: 'Precision Parts Co.',
     verified: false,
+    verificationTier: 'none',
     country: 'Vietnam',
     city: 'Ho Chi Minh City',
     yearsInBusiness: 5,
@@ -51,4 +54,8 @@ export function getSupplierBySlug(slug: string) {
 
 export function getSupplierById(id: string) {
   return suppliers.find((s) => s.id === id);
+}
+
+export function getSupplierMap() {
+  return new Map(suppliers.map((s) => [s.id, s]));
 }

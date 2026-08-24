@@ -1,7 +1,7 @@
 import { SearchBar } from '@/components/marketplace/SearchBar';
 import { ProductCard } from '@/components/marketplace/ProductCard';
 import { SearchFiltersSidebar, SortBar } from '@/components/marketplace/search/SearchFilters';
-import { searchProducts, getCategories } from '@/data/anon/marketplace';
+import { searchProducts, getCategories, getAllSuppliers } from '@/data/anon/marketplace';
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -11,12 +11,17 @@ interface SearchPageProps {
     moq?: string;
     minPrice?: string;
     maxPrice?: string;
+    verified?: string;
+    gold?: string;
   }>;
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const categories = await getCategories();
+  const suppliers = await getAllSuppliers();
+  const supplierMap = new Map(suppliers.map((s) => [s.id, s]));
+
   const results = await searchProducts({
     q: params.q,
     category: params.category,
@@ -24,6 +29,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     moq: params.moq ? Number(params.moq) : undefined,
     minPrice: params.minPrice ? Number(params.minPrice) : undefined,
     maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
+    verified: params.verified === '1',
+    gold: params.gold === '1',
   });
 
   return (
@@ -38,6 +45,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             categories={categories}
             currentCategory={params.category}
             currentMoq={params.moq ? Number(params.moq) : undefined}
+            currentVerified={params.verified === '1'}
+            currentGold={params.gold === '1'}
+            currentMinPrice={params.minPrice ? Number(params.minPrice) : undefined}
+            currentMaxPrice={params.maxPrice ? Number(params.maxPrice) : undefined}
           />
 
           <div className="space-y-4">
@@ -55,7 +66,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             ) : (
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                 {results.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    supplierVerificationTier={supplierMap.get(product.supplierId)?.verificationTier}
+                  />
                 ))}
               </div>
             )}

@@ -1,5 +1,7 @@
 import type { HotSearch, Product } from '@/types/marketplace';
 import { getCategoryAndDescendantIds } from '@/utils/category-tree';
+import { isGoldTier, isPubliclyVerified } from '@/utils/verification';
+import { getSupplierMap } from '@/data/mock/suppliers';
 import { categories } from './categories';
 
 const pub = (p: Omit<Product, 'status' | 'unit'> & Partial<Pick<Product, 'status' | 'unit'>>): Product => ({
@@ -256,8 +258,11 @@ export function searchProducts(filters: {
   maxPrice?: number;
   moq?: number;
   sort?: string;
+  verified?: boolean;
+  gold?: boolean;
 }) {
   let results = [...products];
+  const supplierMap = getSupplierMap();
 
   if (filters.q) {
     const q = filters.q.toLowerCase();
@@ -285,6 +290,16 @@ export function searchProducts(filters: {
 
   if (filters.moq !== undefined) {
     results = results.filter((p) => p.moq <= filters.moq!);
+  }
+
+  if (filters.gold || filters.verified) {
+    results = results.filter((p) => {
+      const supplier = supplierMap.get(p.supplierId);
+      if (!supplier) return false;
+      if (filters.gold) return isGoldTier(supplier.verificationTier);
+      if (filters.verified) return isPubliclyVerified(supplier.verificationTier);
+      return true;
+    });
   }
 
   switch (filters.sort) {

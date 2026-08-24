@@ -1,5 +1,11 @@
 import { createSupabaseClient } from '@/supabase-clients/server';
+import { redirect } from 'next/navigation';
 import { cache } from 'react';
+import type { User } from '@supabase/supabase-js';
+
+function loginRedirect() {
+  redirect('/login');
+}
 
 // Only meant to be used in protected pages
 // This makes an extra call to the server to verify the user is still logged in
@@ -7,10 +13,10 @@ import { cache } from 'react';
 export const getCachedLoggedInVerifiedSupabaseUser = cache(async () => {
   const supabase = await createSupabaseClient();
   const { data, error } = await supabase.auth.getUser();
-  if (error) {
-    throw error;
+  if (error || !data.user) {
+    loginRedirect();
   }
-  return data;
+  return { user: data.user as User };
 });
 
 // Only meant to be used in protected pages
@@ -18,34 +24,30 @@ export const getCachedLoggedInVerifiedSupabaseUser = cache(async () => {
 export const getCachedLoggedInSupabaseUser = cache(async () => {
   const supabase = await createSupabaseClient();
   const { data, error } = await supabase.auth.getSession();
-  if (error) {
-    throw error;
+  if (error || !data.session?.user) {
+    loginRedirect();
   }
-  if (!data.session?.user) {
-    throw new Error('No user found');
-  }
-  return data.session.user;
+  return data.session!.user as User;
 });
 
 export const getCachedLoggedInUserClaims = cache(async () => {
   const supabase = await createSupabaseClient();
   const { data, error } = await supabase.auth.getClaims();
-  if (error) {
-    throw error;
-  }
-  if (!data?.claims) {
-    throw new Error('No claims found');
+  if (error || !data?.claims?.sub) {
+    return null;
   }
   return data.claims;
 });
 
-
 export const getCachedIsUserLoggedIn = cache(async () => {
   const claims = await getCachedLoggedInUserClaims();
-  return claims.sub !== null;
+  return claims?.sub != null;
 });
 
 export const getCachedLoggedInUserId = cache(async () => {
   const claims = await getCachedLoggedInUserClaims();
-  return claims.sub;
+  if (!claims?.sub) {
+    loginRedirect();
+  }
+  return claims!.sub;
 });

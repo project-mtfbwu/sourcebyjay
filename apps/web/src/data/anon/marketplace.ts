@@ -1,9 +1,10 @@
 import { cacheLife } from 'next/cache';
 
-import type { Product, SearchFilters, Supplier, Category } from '@/types/marketplace';
+import type { Product, SearchFilters, Supplier, Category, SupplierGalleryItem, SupplierCertificate, VerificationTier } from '@/types/marketplace';
 import { createSupabaseAnonServerClient } from '@/supabase-clients/anon/createSupabaseAnonServerClient';
 import { mapDbProduct } from '@/utils/marketplace-mappers';
 import { getCategoryAndDescendantIds } from '@/utils/category-tree';
+import { isGoldTier, isPubliclyVerified, legacyVerifiedFromTier, tierFromLegacyVerified } from '@/utils/verification';
 import {
   products as mockProducts,
   getProductBySlug as mockGetProductBySlug,
@@ -14,14 +15,18 @@ import {
   suppliers as mockSuppliers,
   getSupplierBySlug as mockGetSupplierBySlug,
 } from '@/data/mock/suppliers';
+import { getApprovedGalleryBySupplier } from '@/data/mock/gallery';
+import { getApprovedCertificatesBySupplier } from '@/data/mock/certificates';
 import { categories as mockCategories } from '@/data/mock/categories';
 
 function mapDbSupplier(row: Record<string, unknown>): Supplier {
+  const tier = (row.verification_tier as VerificationTier | undefined) ?? tierFromLegacyVerified(Boolean(row.verified));
   return {
     id: row.id as string,
     slug: row.slug as string,
     name: row.name as string,
-    verified: Boolean(row.verified),
+    verified: legacyVerifiedFromTier(tier),
+    verificationTier: tier,
     country: row.country as string,
     city: row.city as string,
     yearsInBusiness: Number(row.years_in_business),
@@ -29,6 +34,30 @@ function mapDbSupplier(row: Record<string, unknown>): Supplier {
     mainProducts: row.main_products as string,
     description: row.description as string,
     bannerUrl: row.banner_url as string | undefined,
+    ownerId: (row.owner_id as string | null) ?? null,
+  };
+}
+
+function mapDbGallery(row: Record<string, unknown>): SupplierGalleryItem {
+  return {
+    id: row.id as string,
+    supplierId: row.supplier_id as string,
+    mediaType: row.media_type as SupplierGalleryItem['mediaType'],
+    imageUrl: row.image_url as string,
+    caption: row.caption as string | null,
+    sortOrder: Number(row.sort_order ?? 0),
+    status: row.status as SupplierGalleryItem['status'],
+  };
+}
+
+function mapDbCertificate(row: Record<string, unknown>): SupplierCertificate {
+  return {
+    id: row.id as string,
+    supplierId: row.supplier_id as string,
+    name: row.name as string,
+    fileUrl: row.file_url as string,
+    expiresAt: row.expires_at as string | null,
+    status: row.status as SupplierCertificate['status'],
   };
 }
 
@@ -57,7 +86,19 @@ export async function getCategories() {
   return fetchDbCategories();
 }
 
-function applyClientFilters(results: Product[], filters: SearchFilters, categories: Category[]) {
+function applySupplierFilters(results: Product[], filters: SearchFilters, supplierMap: Map<string, Supplier>) {
+  if (!filters.verified && !filters.gold) return results;
+
+  return results.filter((product) => {
+    const supplier = supplierMap.get(product.supplierId);
+    if (!supplier) return false;
+    if (filters.gold) return isGoldTier(supplier.verificationTier);
+    if (filters.verified) return isPubliclyVerified(supplier.verificationTier);
+    return true;
+  });
+}
+
+function applyClientFilters(results: Product[], filters: SearchFilters, categories: Category[], supplierMap: Map<string, Supplier>) {
   let filtered = results;
 
   if (filters.category) {
@@ -76,6 +117,8 @@ function applyClientFilters(results: Product[], filters: SearchFilters, categori
   if (filters.moq !== undefined) {
     filtered = filtered.filter((p) => p.moq <= filters.moq!);
   }
+
+  filtered = applySupplierFilters(filtered, filters, supplierMap);
 
   return filtered;
 }
@@ -108,6 +151,9 @@ export async function searchProducts(filters: SearchFilters): Promise<Product[]>
   }
 
   const categories = await fetchDbCategories();
+  const allSuppliers = await getAllSuppliers();
+  const dbSupplierMap = new Map(allSuppliers.map((s) => [s.id, s]));
+
   let query = supabase.from('products').select('*').eq('status', 'published');
 
   if (filters.q) {
@@ -119,7 +165,7 @@ export async function searchProducts(filters: SearchFilters): Promise<Product[]>
 
     if (!ftsError && ftsData?.length) {
       let results = ftsData.map(mapDbProduct);
-      results = applyClientFilters(results, filters, categories);
+      results = applyClientFilters(results, filters, categories, dbSupplierMap);
       return sortProducts(results, filters.sort);
     }
 
@@ -151,7 +197,9 @@ export async function searchProducts(filters: SearchFilters): Promise<Product[]>
     return mockSearchProducts(filters);
   }
 
-  return sortProducts(data.map(mapDbProduct), filters.sort);
+  let results = data.map(mapDbProduct);
+  results = applyClientFilters(results, filters, categories, dbSupplierMap);
+  return sortProducts(results, filters.sort);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
@@ -269,4 +317,49 @@ export async function getAllSuppliers(): Promise<Supplier[]> {
   }
 
   return data.map(mapDbSupplier);
+}
+
+export async function getSupplierGallery(supplierId: string): Promise<SupplierGalleryItem[]> {
+  'use cache: private';
+  cacheLife('minutes');
+
+  const supabase = await createSupabaseAnonServerClient();
+  if (!supabase) {
+    return getApprovedGalleryBySupplier(supplierId);
+  }
+
+  const { data, error } = await supabase
+    .from('supplier_gallery')
+    .select('*')
+    .eq('supplier_id', supplierId)
+    .eq('status', 'approved')
+    .order('sort_order');
+
+  if (error || !data?.length) {
+    return getApprovedGalleryBySupplier(supplierId);
+  }
+
+  return data.map(mapDbGallery);
+}
+
+export async function getSupplierCertificates(supplierId: string): Promise<SupplierCertificate[]> {
+  'use cache: private';
+  cacheLife('minutes');
+
+  const supabase = await createSupabaseAnonServerClient();
+  if (!supabase) {
+    return getApprovedCertificatesBySupplier(supplierId);
+  }
+
+  const { data, error } = await supabase
+    .from('supplier_certificates')
+    .select('*')
+    .eq('supplier_id', supplierId)
+    .eq('status', 'approved');
+
+  if (error || !data?.length) {
+    return getApprovedCertificatesBySupplier(supplierId);
+  }
+
+  return data.map(mapDbCertificate);
 }

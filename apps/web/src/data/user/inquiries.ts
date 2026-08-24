@@ -1,6 +1,7 @@
 'use server';
 
 import { authActionClient } from '@/lib/safe-action';
+import { assertRateLimit } from '@/lib/rate-limit';
 import { createSupabaseClient } from '@/supabase-clients/server';
 import { z } from 'zod';
 
@@ -15,6 +16,8 @@ const inquirySchema = z.object({
 export const submitInquiryAction = authActionClient
   .schema(inquirySchema)
   .action(async ({ parsedInput, ctx }) => {
+    assertRateLimit(`inquiry:${ctx.userId}`, 10, 60 * 60 * 1000);
+
     const supabase = await createSupabaseClient();
 
     const { error } = await supabase.from('inquiries').insert({

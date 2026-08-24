@@ -1,12 +1,13 @@
 'use server';
 import { actionClient } from '@/lib/safe-action';
+import { assertRateLimit } from '@/lib/rate-limit';
 import { createSupabaseClient } from '@/supabase-clients/server';
 import { toSiteURL } from '@/utils/helpers';
 import { z } from 'zod';
 
 const signUpSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(3),
+  password: z.string().min(8),
 });
 
 /**
@@ -20,6 +21,8 @@ const signUpSchema = z.object({
 export const signUpAction = actionClient
   .schema(signUpSchema)
   .action(async ({ parsedInput: { email, password } }) => {
+    assertRateLimit(`auth:signup:${email.toLowerCase()}`, 5, 60 * 60 * 1000);
+
     const supabase = await createSupabaseClient();
 
     const { data, error } = await supabase.auth.signUp({
@@ -52,6 +55,8 @@ const signInSchema = z.object({
 export const signInWithPasswordAction = actionClient
   .schema(signInSchema)
   .action(async ({ parsedInput: { email, password } }) => {
+    assertRateLimit(`auth:signin:${email.toLowerCase()}`, 10, 15 * 60 * 1000);
+
     const supabase = await createSupabaseClient();
 
     const { error } = await supabase.auth.signInWithPassword({
@@ -79,6 +84,8 @@ const signInWithMagicLinkSchema = z.object({
 export const signInWithMagicLinkAction = actionClient
   .schema(signInWithMagicLinkSchema)
   .action(async ({ parsedInput: { email, next } }) => {
+    assertRateLimit(`auth:magic:${email.toLowerCase()}`, 5, 60 * 60 * 1000);
+
     const supabase = await createSupabaseClient();
     const redirectUrl = new URL(toSiteURL('/auth/callback'));
     if (next) {
@@ -112,6 +119,8 @@ const signInWithProviderSchema = z.object({
 export const signInWithProviderAction = actionClient
   .schema(signInWithProviderSchema)
   .action(async ({ parsedInput: { provider, next } }) => {
+    assertRateLimit(`auth:oauth:${provider}`, 30, 60 * 60 * 1000);
+
     const supabase = await createSupabaseClient();
     const redirectToURL = new URL(toSiteURL('/auth/callback'));
     if (next) {
@@ -144,6 +153,8 @@ const resetPasswordSchema = z.object({
 export const resetPasswordAction = actionClient
   .schema(resetPasswordSchema)
   .action(async ({ parsedInput: { email } }) => {
+    assertRateLimit(`auth:reset:${email.toLowerCase()}`, 3, 60 * 60 * 1000);
+
     const supabase = await createSupabaseClient();
     const redirectToURL = new URL(toSiteURL('/auth/callback'));
     redirectToURL.searchParams.set('next', '/update-password');

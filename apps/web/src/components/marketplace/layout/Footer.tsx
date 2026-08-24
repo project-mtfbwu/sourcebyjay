@@ -71,11 +71,11 @@ export function MarketplaceFooter() {
       <div className="border-t border-marketplace-border bg-white py-6 text-center text-xs text-marketplace-muted">
         <p>© 2026 SourceByJay. All rights reserved.</p>
         <div className="mt-2 flex flex-wrap justify-center gap-2">
-          <Link href="#">Legal Notice</Link>
+          <Link href="/terms">Legal Notice</Link>
           <span>·</span>
-          <Link href="#">Privacy Policy</Link>
+          <Link href="/privacy">Privacy Policy</Link>
           <span>·</span>
-          <Link href="#">Terms of Use</Link>
+          <Link href="/terms">Terms of Use</Link>
         </div>
       </div>
     </footer>

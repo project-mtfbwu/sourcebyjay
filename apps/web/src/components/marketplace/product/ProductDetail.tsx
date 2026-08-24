@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { BadgeCheck, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
+import { VerificationBadge } from '@/components/marketplace/VerificationBadge';
 import type { Product } from '@/types/marketplace';
 import type { Supplier } from '@/types/marketplace';
 import { ProductCard } from '@/components/marketplace/ProductCard';
@@ -136,9 +137,7 @@ export function SupplierMiniCard({ supplier }: { supplier: Supplier }) {
         <div>
           <div className="flex items-center gap-2">
             <h4 className="font-semibold">{supplier.name}</h4>
-            {supplier.verified && (
-              <BadgeCheck className="size-4 text-brand-primary-dark" aria-label="Verified" />
-            )}
+            <VerificationBadge tier={supplier.verificationTier} />
           </div>
           <p className="mt-1 flex items-center gap-1 text-sm text-marketplace-muted">
             <MapPin className="size-3" />

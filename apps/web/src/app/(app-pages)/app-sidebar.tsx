@@ -6,7 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar';
-import { getCachedLoggedInVerifiedSupabaseUser } from '@/rsc-data/supabase';
+import { getCachedLoggedInSupabaseUser } from '@/rsc-data/supabase';
 import { getMyProfile } from '@/data/user/profile';
 import {
   Home
@@ -44,7 +44,7 @@ async function SidebarHeaderContent() {
 
 
 async function SidebarContentWrapper() {
-  const { user } = await getCachedLoggedInVerifiedSupabaseUser();
+  const user = await getCachedLoggedInSupabaseUser();
   const profile = await getMyProfile(user.id);
   return <AppSidebarContent user={user} isAdmin={profile?.role === 'admin'} />;
 }

@@ -21,7 +21,7 @@ test.describe.parallel('Logged-in user page access', () => {
     await page.goto('/');
     await expect(page).toHaveURL('/');
     await expect(
-      page.getByRole('heading', { name: /build your.+saas product.+faster/i })
+      page.getByRole('heading', { name: 'Welcome to SourceByJay' })
     ).toBeVisible();
   });
 

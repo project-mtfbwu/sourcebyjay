@@ -2,14 +2,16 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Product } from '@/types/marketplace';
+import type { Product, VerificationTier } from '@/types/marketplace';
+import { VerificationBadge } from '@/components/marketplace/VerificationBadge';
 
 interface ProductCardProps {
   product: Product;
   size?: 'sm' | 'md';
+  supplierVerificationTier?: VerificationTier;
 }
 
-export function ProductCard({ product, size = 'md' }: ProductCardProps) {
+export function ProductCard({ product, size = 'md', supplierVerificationTier }: ProductCardProps) {
   const imageSize = size === 'sm' ? 140 : 165;
 
   return (
@@ -28,6 +30,11 @@ export function ProductCard({ product, size = 'md' }: ProductCardProps) {
         {product.isLocal && (
           <span className="absolute left-2 top-2 rounded bg-brand-primary px-1.5 py-0.5 text-xs font-medium text-black">
             Local
+          </span>
+        )}
+        {supplierVerificationTier && (
+          <span className="absolute right-2 top-2">
+            <VerificationBadge tier={supplierVerificationTier} />
           </span>
         )}
       </div>

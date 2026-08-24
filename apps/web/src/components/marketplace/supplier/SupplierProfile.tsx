@@ -1,17 +1,27 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { BadgeCheck, MapPin, Clock, Package } from 'lucide-react';
-import type { Product } from '@/types/marketplace';
-import type { Supplier } from '@/types/marketplace';
-import { ProductCard } from '@/components/marketplace/ProductCard';
-import { Button } from '@/components/ui/button';
+'use client';
 
-interface SupplierProfileProps {
+import Image from 'next/image';
+import { useState } from 'react';
+import { MapPin, Clock, Package, BadgeCheck } from 'lucide-react';
+import type { Product, Supplier, SupplierCertificate, SupplierGalleryItem } from '@/types/marketplace';
+import { ProductCard } from '@/components/marketplace/ProductCard';
+import { VerificationBadge } from '@/components/marketplace/VerificationBadge';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+interface SupplierProfileViewProps {
   supplier: Supplier;
   products: Product[];
+  gallery: SupplierGalleryItem[];
+  certificates: SupplierCertificate[];
 }
 
-export function SupplierProfileView({ supplier, products }: SupplierProfileProps) {
+export function SupplierProfileView({
+  supplier,
+  products,
+  gallery,
+  certificates,
+}: SupplierProfileViewProps) {
   return (
     <div>
       <div className="relative h-48 overflow-hidden bg-muted lg:h-64">
@@ -28,14 +38,9 @@ export function SupplierProfileView({ supplier, products }: SupplierProfileProps
               {supplier.name.charAt(0)}
             </div>
             <div className="pb-2">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-2xl font-bold text-white drop-shadow-lg lg:text-3xl">{supplier.name}</h1>
-                {supplier.verified && (
-                  <span className="flex items-center gap-1 rounded-full bg-brand-primary px-2 py-0.5 text-xs font-medium text-black">
-                    <BadgeCheck className="size-3" />
-                    Verified
-                  </span>
-                )}
+                <VerificationBadge tier={supplier.verificationTier} size="md" />
               </div>
               <p className="mt-1 flex items-center gap-1 text-white/90 drop-shadow">
                 <MapPin className="size-4" />
@@ -54,20 +59,110 @@ export function SupplierProfileView({ supplier, products }: SupplierProfileProps
           <StatCard icon={BadgeCheck} label="Response rate" value={supplier.responseRate} />
         </div>
 
-        <div className="mb-8 rounded-xl border border-marketplace-border p-6">
-          <h2 className="mb-3 text-lg font-semibold">About the company</h2>
-          <p className="text-marketplace-muted">{supplier.description}</p>
-        </div>
+        <Tabs defaultValue="overview" className="mb-12">
+          <TabsList className="mb-6 flex h-auto flex-wrap gap-1 bg-muted/50 p-1">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="products">Products ({products.length})</TabsTrigger>
+            <TabsTrigger value="factory">Factory tour ({gallery.length})</TabsTrigger>
+            <TabsTrigger value="certificates">Certificates ({certificates.length})</TabsTrigger>
+          </TabsList>
 
-        <section>
-          <h2 className="mb-4 text-lg font-semibold">Products ({products.length})</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </section>
+          <TabsContent value="overview">
+            <div className="rounded-xl border border-marketplace-border p-6">
+              <h2 className="mb-3 text-lg font-semibold">About the company</h2>
+              <p className="text-marketplace-muted">{supplier.description}</p>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="products">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  supplierVerificationTier={supplier.verificationTier}
+                />
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="factory">
+            {gallery.length === 0 ? (
+              <EmptyState message="Factory photos will appear here after ops approval." />
+            ) : (
+              <GalleryCarousel items={gallery} />
+            )}
+          </TabsContent>
+
+          <TabsContent value="certificates">
+            {certificates.length === 0 ? (
+              <EmptyState message="Certificates will appear here after verification." />
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {certificates.map((cert) => (
+                  <div
+                    key={cert.id}
+                    className="overflow-hidden rounded-xl border border-marketplace-border bg-white"
+                  >
+                    <div className="relative aspect-[4/5] bg-muted">
+                      <Image src={cert.fileUrl} alt={cert.name} fill className="object-cover" sizes="300px" />
+                    </div>
+                    <div className="p-4">
+                      <p className="font-medium">{cert.name}</p>
+                      {cert.expiresAt && (
+                        <p className="mt-1 text-xs text-marketplace-muted">Expires {cert.expiresAt}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
+    </div>
+  );
+}
+
+function GalleryCarousel({ items }: { items: SupplierGalleryItem[] }) {
+  const [index, setIndex] = useState(0);
+  const current = items[index];
+
+  return (
+    <div className="space-y-4">
+      <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
+        <Image
+          src={current.imageUrl}
+          alt={current.caption ?? 'Factory photo'}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 900px"
+          priority
+        />
+      </div>
+      {current.caption && <p className="text-sm text-marketplace-muted">{current.caption}</p>}
+      <div className="flex gap-2 overflow-x-auto pb-2">
+        {items.map((item, i) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setIndex(i)}
+            className={`relative size-20 shrink-0 overflow-hidden rounded-lg border-2 ${
+              i === index ? 'border-marketplace-accent' : 'border-transparent'
+            }`}
+          >
+            <Image src={item.imageUrl} alt="" fill className="object-cover" sizes="80px" />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ message }: { message: string }) {
+  return (
+    <div className="rounded-xl border border-dashed border-marketplace-border p-12 text-center text-marketplace-muted">
+      {message}
     </div>
   );
 }

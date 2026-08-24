@@ -1,0 +1,48 @@
+# CodeRabbit — AI code review + security analysis
+# Docs: https://docs.coderabbit.ai/guides/configure-coderabbit
+language: en-US
+reviews:
+  profile: assertive
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+  path_filters:
+    - '!**/*.md'
+    - '!**/pnpm-lock.yaml'
+    - '!**/.next/**'
+    - '!**/test-results/**'
+    - '!**/playwright-report/**'
+  path_instructions:
+    - path: 'apps/database/supabase/**'
+      instructions: |
+        Flag SQL injection risks, missing RLS policies, overly permissive grants,
+        and secrets in migrations. Prefer schema-first changes in schemas/*.sql.
+    - path: 'apps/web/src/data/**'
+      instructions: |
+        Flag missing auth checks in server actions, unsafe user input handling,
+        and Supabase queries that bypass RLS with the service role key.
+    - path: 'apps/web/src/supabase-clients/**'
+      instructions: |
+        Ensure anon clients never read session cookies in cached scopes;
+        service role must never be exposed to the client bundle.
+  tools:
+    eslint:
+      enabled: true
+    gitleaks:
+      enabled: true
+    semgrep:
+      enabled: true
+    oxc:
+      enabled: true
+chat:
+  auto_reply: true
+knowledge_base:
+  opt_out: false
+  web_search:
+    enabled: false

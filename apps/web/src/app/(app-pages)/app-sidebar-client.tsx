@@ -48,7 +48,7 @@ export function AppSidebarContent({ user, isAdmin = false }: { user: SupabaseUse
   const items = [
     ...navigationItems,
     ...(isAdmin
-      ? [{ title: 'Admin', url: '/dashboard/admin', icon: Shield }]
+      ? [{ title: 'Admin', url: '/dashboard/admin/suppliers', icon: Shield }]
       : []),
   ];
 

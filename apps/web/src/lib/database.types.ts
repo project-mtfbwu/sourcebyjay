@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          id: string
+          actor_id: string | null
+          action: string
+          entity_type: string
+          entity_id: string | null
+          metadata: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          actor_id?: string | null
+          action: string
+          entity_type: string
+          entity_id?: string | null
+          metadata?: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          actor_id?: string | null
+          action?: string
+          entity_type?: string
+          entity_id?: string | null
+          metadata?: Json
+          created_at?: string
+        }
+        Relationships: []
+      }
       content_blog_post_comments: {
         Row: {
           author_id: string
@@ -182,6 +212,7 @@ export type Database = {
           slug: string
           name: string
           verified: boolean
+          verification_tier: 'none' | 'basic' | 'verified' | 'gold' | 'assessed'
           country: string
           city: string
           years_in_business: number
@@ -198,6 +229,7 @@ export type Database = {
           slug: string
           name: string
           verified?: boolean
+          verification_tier?: 'none' | 'basic' | 'verified' | 'gold' | 'assessed'
           country: string
           city: string
           years_in_business?: number
@@ -214,6 +246,7 @@ export type Database = {
           slug?: string
           name?: string
           verified?: boolean
+          verification_tier?: 'none' | 'basic' | 'verified' | 'gold' | 'assessed'
           country?: string
           city?: string
           years_in_business?: number
@@ -222,6 +255,84 @@ export type Database = {
           description?: string
           banner_url?: string | null
           owner_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      supplier_certificates: {
+        Row: {
+          id: string
+          supplier_id: string
+          name: string
+          file_url: string
+          expires_at: string | null
+          status: 'pending' | 'approved' | 'rejected'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          supplier_id: string
+          name: string
+          file_url: string
+          expires_at?: string | null
+          status?: 'pending' | 'approved' | 'rejected'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          supplier_id?: string
+          name?: string
+          file_url?: string
+          expires_at?: string | null
+          status?: 'pending' | 'approved' | 'rejected'
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      supplier_gallery: {
+        Row: {
+          id: string
+          supplier_id: string
+          media_type: 'factory' | 'showroom' | 'warehouse' | 'team' | 'certificate'
+          image_url: string
+          caption: string | null
+          sort_order: number
+          status: 'pending' | 'approved' | 'rejected'
+          uploaded_by: string | null
+          reviewed_by: string | null
+          reviewed_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          supplier_id: string
+          media_type?: 'factory' | 'showroom' | 'warehouse' | 'team' | 'certificate'
+          image_url: string
+          caption?: string | null
+          sort_order?: number
+          status?: 'pending' | 'approved' | 'rejected'
+          uploaded_by?: string | null
+          reviewed_by?: string | null
+          reviewed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          supplier_id?: string
+          media_type?: 'factory' | 'showroom' | 'warehouse' | 'team' | 'certificate'
+          image_url?: string
+          caption?: string | null
+          sort_order?: number
+          status?: 'pending' | 'approved' | 'rejected'
+          uploaded_by?: string | null
+          reviewed_by?: string | null
+          reviewed_at?: string | null
           created_at?: string
           updated_at?: string
         }
