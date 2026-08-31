@@ -97,7 +97,7 @@
     "react-hook-form": "^7.85.0",
     "react-hot-toast": "^2.6.0",
     "react-no-ssr": "^1.1.0",
-    "react-resizable-panels": "^2.1.9",
+    "react-resizable-panels": "^4.12.3",
     "recharts": "^2.15.4",
     "rooks": "^9.8.0",
     "server-only": "^0.0.1",
