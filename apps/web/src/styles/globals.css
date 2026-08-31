@@ -9,6 +9,8 @@
 
 @plugin "@tailwindcss/forms";
 @import 'tw-animate-css';
+/* Must import here (not only from layout) so @theme tokens generate utilities */
+@import './marketplace.css';
 
 :root {
   --card: oklch(1 0 0);

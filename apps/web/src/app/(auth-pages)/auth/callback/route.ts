@@ -1,3 +1,4 @@
+import { PORTAL_AUTH_COOKIE } from '@sourcebyjay/auth';
 import { createServerClient } from '@supabase/ssr';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -14,6 +15,9 @@ export async function GET(request: Request) {
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
       {
+        cookieOptions: {
+          name: PORTAL_AUTH_COOKIE.web,
+        },
         cookies: {
           getAll() {
             return cookieStore.getAll();
@@ -29,6 +33,30 @@ export async function GET(request: Request) {
 
     try {
       await supabase.auth.exchangeCodeForSession(code);
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle();
+        const { data: isStaff } = await supabase.rpc('is_active_staff');
+        if (profile?.role === 'seller' || isStaff) {
+          await supabase.auth.signOut();
+          const login = new URL('/login', requestUrl.origin);
+          login.searchParams.set(
+            'error',
+            profile?.role === 'seller'
+              ? 'seller_account'
+              : 'staff_account',
+          );
+          revalidatePath('/', 'layout');
+          return NextResponse.redirect(login);
+        }
+      }
     } catch (error) {
       console.error('Failed to exchange code for session: ', error);
     }

@@ -27,29 +27,19 @@ All agent skills live in `.agents/skills/`. Do not duplicate them in `.cursor`, 
 
 
 | Skill | Purpose |
-
 |-------|---------|
-
+| `sourcebyjay-beginner-eli5` | Founder is a beginner — ELI5 every manual step |
+| `sourcebyjay-vomit-protocol` | Propose + Mermaid + scout → Owner APPROVE before code |
 | `sourcebyjay-phase-tracker` | Current phase, GO/HOLD/CHANGE gates |
-
 | `sourcebyjay-visual-demo` | Mandatory visual review each phase |
-
 | `sourcebyjay-security-review` | RLS, secrets, pre-customer checklist |
-
 | `sourcebyjay-ci-quality` | CodeQL, Playwright, CodeRabbit, CI |
-
 | `sourcebyjay-architecture` | 3 portals: web / vendor / ops |
-
 | `sourcebyjay-ops-rbac` | Staff roles, audit, approvals |
-
 | `sourcebyjay-b2b-workflows` | RFQ, quotes, orders, chat, reviews |
-
 | `sourcebyjay-trust-media` | Gold badge, factory gallery (Phase 1) |
-
 | `sourcebyjay-reference-repos` | Steal patterns from OSS repos |
-
 | `sourcebyjay-payments` | Stripe Connect (Phase 7) |
-
 | `sourcebyjay-figma-handoff` | Figma after build (Phase 8) |
 
 
@@ -80,17 +70,21 @@ All agent skills live in `.agents/skills/`. Do not duplicate them in `.cursor`, 
 
 
 
-1. Read [DECISIONS.md](.agents/skills/sourcebyjay-architecture/references/DECISIONS.md) — locked choices
+1. Read [sourcebyjay-beginner-eli5](.agents/skills/sourcebyjay-beginner-eli5/SKILL.md) — founder is a beginner; ELI5 every manual step
 
-2. Read `sourcebyjay-phase-tracker/phase-state.json`
+2. Read [sourcebyjay-vomit-protocol](.agents/skills/sourcebyjay-vomit-protocol/SKILL.md) — propose with Mermaid + scout; wait for Owner **APPROVE** before code
 
-3. Load phase-specific skills from README index
+3. Read [DECISIONS.md](.agents/skills/sourcebyjay-architecture/references/DECISIONS.md) — locked choices
 
-4. Implement current phase only ([IMPLEMENTATION.md](IMPLEMENTATION.md))
+4. Read `sourcebyjay-phase-tracker/phase-state.json`
 
-5. Run security-review + ci-quality before visual demo
+5. Load phase-specific skills from README index
 
-6. Run visual-demo → wait for user **GO** before next phase
+6. Implement current phase only ([IMPLEMENTATION.md](IMPLEMENTATION.md)) after approval
+
+7. Run security-review + ci-quality before visual demo
+
+8. Run visual-demo → wait for user **GO** before next phase
 
 
 

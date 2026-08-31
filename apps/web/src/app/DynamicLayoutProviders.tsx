@@ -1,6 +1,7 @@
 'use client';
 import React, { Suspense } from 'react';
 
+import { PostHogProvider } from '@sourcebyjay/observability/PostHogProvider';
 import { Toaster as SonnerToaster } from 'sonner';
 import { ThemeProvider, useTheme } from 'next-themes';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
@@ -17,6 +18,7 @@ export function DynamicLayoutProviders({
   children: React.ReactNode;
 }) {
   return (
+    <PostHogProvider portal="web">
     <ThemeProvider enableSystem themes={['light', 'dark']} defaultTheme="light">
       {children}
       <Suspense>
@@ -29,5 +31,6 @@ export function DynamicLayoutProviders({
         <CustomerToaster />
       </Suspense>
     </ThemeProvider>
+    </PostHogProvider>
   );
 }

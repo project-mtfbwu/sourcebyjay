@@ -4,7 +4,7 @@ export type UserRole = 'buyer' | 'seller' | 'admin';
 export type ListingStatus = 'draft' | 'published' | 'archived';
 export type VerificationTier = 'none' | 'basic' | 'verified' | 'gold' | 'assessed';
 export type GalleryMediaType = 'factory' | 'showroom' | 'warehouse' | 'team' | 'certificate';
-export type MediaReviewStatus = 'pending' | 'approved' | 'rejected';
+export type MediaReviewStatus = 'pending' | 'approved' | 'rejected' | 'flagged' | 'archived';
 
 export interface Profile {
   id: string;
@@ -17,6 +17,8 @@ export interface Profile {
   country: string | null;
   city: string | null;
   bio: string | null;
+  gstin: string | null;
+  industry: string | null;
 }
 
 export interface Category {
@@ -41,13 +43,19 @@ export interface Supplier {
   logoUrl?: string;
   bannerUrl?: string;
   ownerId?: string | null;
+  /** SourceByJay Guarantee eligible (Pro+ plan or ops override) */
+  guaranteeEligible?: boolean;
+  /** Home tab featured product order (published listing ids) */
+  featuredProductIds?: string[];
 }
 
 export interface SupplierGalleryItem {
   id: string;
   supplierId: string;
   mediaType: GalleryMediaType;
+  contentKind: 'image' | 'video';
   imageUrl: string;
+  videoUrl?: string | null;
   caption?: string | null;
   sortOrder: number;
   status: MediaReviewStatus;
@@ -58,6 +66,9 @@ export interface SupplierCertificate {
   supplierId: string;
   name: string;
   fileUrl: string;
+  certType?: string | null;
+  certNumber?: string | null;
+  issuingAuthority?: string | null;
   expiresAt?: string | null;
   status: MediaReviewStatus;
 }
@@ -75,6 +86,14 @@ export interface ListingAttribute {
 export interface ListingVariant {
   name: string;
   options: string[];
+}
+
+export interface ProductMediaItem {
+  id: string;
+  kind: 'image' | 'video';
+  url: string;
+  thumbnailUrl?: string | null;
+  sortOrder: number;
 }
 
 export interface Product {
@@ -103,6 +122,12 @@ export interface Product {
   variants?: ListingVariant[];
   sampleAvailable?: boolean;
   customizationAvailable?: boolean;
+  hsnCode?: string | null;
+  gstRateBps?: number | null;
+  videoUrl?: string | null;
+  productVideoEnabled?: boolean;
+  /** Ordered gallery slides from product_media + library (Phase 14B) */
+  media?: ProductMediaItem[];
 }
 
 export interface HotSearch {
@@ -113,13 +138,19 @@ export interface HotSearch {
 
 export interface SearchFilters {
   q?: string;
+  /** Secondary filter — Alibaba “search within results” */
+  within?: string;
   category?: string;
   minPrice?: number;
   maxPrice?: number;
   moq?: number;
-  sort?: 'relevance' | 'price-asc' | 'price-desc' | 'moq-asc';
+  sort?: 'relevance' | 'price-asc' | 'price-desc' | 'moq-asc' | 'sold-desc';
   verified?: boolean;
   gold?: boolean;
+  /** SourceByJay Guarantee filter — Pro+ / ops override suppliers */
+  guarantee?: boolean;
+  country?: string;
+  mode?: 'products' | 'suppliers';
 }
 
 export interface ListingInput {

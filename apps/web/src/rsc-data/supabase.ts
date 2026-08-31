@@ -1,4 +1,5 @@
 import { createSupabaseClient } from '@/supabase-clients/server';
+import { connection } from 'next/server';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import type { User } from '@supabase/supabase-js';
@@ -7,10 +8,17 @@ function loginRedirect() {
   redirect('/login');
 }
 
+async function requireRequestTime() {
+  // Supabase auth-js checks session expiry with Date.now().
+  // Next.js 16 cacheComponents forbids that during prerender.
+  await connection();
+}
+
 // Only meant to be used in protected pages
 // This makes an extra call to the server to verify the user is still logged in
 // Use sparingly
 export const getCachedLoggedInVerifiedSupabaseUser = cache(async () => {
+  await requireRequestTime();
   const supabase = await createSupabaseClient();
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) {
@@ -20,17 +28,19 @@ export const getCachedLoggedInVerifiedSupabaseUser = cache(async () => {
 });
 
 // Only meant to be used in protected pages
-// This doesn't verify the token with the server, it only validates the stored token
 export const getCachedLoggedInSupabaseUser = cache(async () => {
+  await requireRequestTime();
   const supabase = await createSupabaseClient();
-  const { data, error } = await supabase.auth.getSession();
-  if (error || !data.session?.user) {
+  // Prefer getUser() — getSession() is cookie-trusting and trips Date.now() expiry checks.
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) {
     loginRedirect();
   }
-  return data.session!.user as User;
+  return data.user as User;
 });
 
 export const getCachedLoggedInUserClaims = cache(async () => {
+  await requireRequestTime();
   const supabase = await createSupabaseClient();
   const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.claims?.sub) {

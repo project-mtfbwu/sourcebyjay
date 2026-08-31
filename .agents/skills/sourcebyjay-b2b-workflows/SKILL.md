@@ -16,6 +16,22 @@ Alibaba-style: **inquiry-first**, not cart-first checkout.
 Browse / AI search → RFQ or Request Listing → Chat → Quote → Confirm → Pay → Track → Review
 ```
 
+Homepage: past searches + mixed recommendations — [homepage-personalization.md](references/homepage-personalization.md)
+
+Ad campaigns (Phase 13): Google-style CPC sponsored search — [ad-campaigns.md](references/ad-campaigns.md).
+
+**Chat UX parity (Phase 5B, post go-live):** Alibaba Message Center sidebar, quick questions, attachments, seller PWA — [chat-ux-parity.md](references/chat-ux-parity.md).
+
+**Factory mini-site (Phase 18):** Alibaba `{company}.m.alibaba.com` style storefront from PDP company card — [supplier-factory-minisite.md](references/supplier-factory-minisite.md).
+
+**SourceByJay Guarantee** (Phase 9): Alibaba Trade Assurance parallel — [sourcebyjay-guarantee.md](references/sourcebyjay-guarantee.md).
+
+**Vendor listing plans** (Phase 17): Free → Enterprise — [vendor-listing-plans.md](references/vendor-listing-plans.md).
+
+**Global i18n** (Phase 12): Indian + international languages — [i18n-languages.md](references/i18n-languages.md).
+
+**Alibaba parallels index:** [alibaba-parallels.md](../sourcebyjay-architecture/references/alibaba-parallels.md).
+
 ## Status machines
 
 ### Inquiry (exists)
@@ -55,7 +71,7 @@ Append-only `order_events` for timeline UI.
 - **Default / minimum:** 5% (500 bps) — see [commission.md](../sourcebyjay-payments/references/commission.md)
 - Set on vendor during **ops onboarding** (manager+)
 - **Snapshotted** on `orders.commission_rate_bps` at order confirm — never recalculate retroactively
-- Charged via Stripe `application_fee_amount` in Phase 7
+- Charged via Stripe `application_fee_amount` in Phase 10
 
 ## Buyer vs vendor actions
 
@@ -69,6 +85,9 @@ Append-only `order_events` for timeline UI.
 | Reply to review | — | ✓ |
 | Post buying request | ✓ | — |
 | Bid on request | — | ✓ |
+| Create ad campaign (CPC) | — | ✓ |
+| Top up ad wallet | — | ✓ |
+| Upgrade listing plan | — | ✓ |
 
 ## MOQ & pricing
 

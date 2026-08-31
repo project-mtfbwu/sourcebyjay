@@ -5,7 +5,6 @@ import { createSupabaseClient } from '@/supabase-clients/server';
 import type { Profile, UserRole } from '@/types/marketplace';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { slugify } from '@/utils/marketplace-mappers';
 
 function mapProfile(row: Record<string, unknown>): Profile {
   return {
@@ -19,6 +18,8 @@ function mapProfile(row: Record<string, unknown>): Profile {
     country: (row.country as string) ?? null,
     city: (row.city as string) ?? null,
     bio: (row.bio as string) ?? null,
+    gstin: (row.gstin as string) ?? null,
+    industry: (row.industry as string) ?? null,
   };
 }
 
@@ -48,10 +49,12 @@ export async function ensureProfile(userId: string, email: string): Promise<Prof
 const updateProfileSchema = z.object({
   fullName: z.string().min(1).max(120).optional(),
   companyName: z.string().max(200).optional(),
-  phone: z.string().max(40).optional(),
+  phone: z.string().min(8).max(40).optional(),
   country: z.string().max(80).optional(),
   city: z.string().max(80).optional(),
   bio: z.string().max(1000).optional(),
+  gstin: z.string().max(20).optional(),
+  industry: z.string().max(120).optional(),
   avatarUrl: z.string().url().optional().or(z.literal('')),
 });
 
@@ -69,6 +72,8 @@ export const updateProfileAction = authActionClient
         country: parsedInput.country,
         city: parsedInput.city,
         bio: parsedInput.bio,
+        gstin: parsedInput.gstin || null,
+        industry: parsedInput.industry || null,
         avatar_url: parsedInput.avatarUrl || null,
       })
       .eq('id', ctx.userId)
@@ -78,6 +83,7 @@ export const updateProfileAction = authActionClient
     if (error) throw new Error(error.message);
 
     revalidatePath('/dashboard/profile');
+    revalidatePath('/account/profile');
     return mapProfile(data);
   });
 
@@ -92,61 +98,45 @@ const becomeSellerSchema = z.object({
 
 export const becomeSellerAction = authActionClient
   .schema(becomeSellerSchema)
-  .action(async ({ parsedInput, ctx }) => {
-    const supabase = await createSupabaseClient();
-
-    const slugBase = slugify(parsedInput.companyName);
-    const slug = `${slugBase}-${ctx.userId.slice(0, 8)}`;
-
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({
-        role: 'seller',
-        company_name: parsedInput.companyName,
-        country: parsedInput.country,
-        city: parsedInput.city,
-      })
-      .eq('id', ctx.userId);
-
-    if (profileError) throw new Error(profileError.message);
-
-    const { data: existing } = await supabase
-      .from('suppliers')
-      .select('id')
-      .eq('owner_id', ctx.userId)
-      .maybeSingle();
-
-    if (existing) {
-      revalidatePath('/dashboard/profile');
-      revalidatePath('/dashboard/listings');
-      return { supplierId: existing.id };
-    }
-
-    const { data: supplier, error: supplierError } = await supabase
-      .from('suppliers')
-      .insert({
-        slug,
-        name: parsedInput.companyName,
-        owner_id: ctx.userId,
-        country: parsedInput.country,
-        city: parsedInput.city,
-        main_products: parsedInput.mainProducts,
-        description: parsedInput.description,
-        years_in_business: parsedInput.yearsInBusiness,
-        verified: false,
-      })
-      .select('id')
-      .single();
-
-    if (supplierError) throw new Error(supplierError.message);
-
-    revalidatePath('/dashboard/profile');
-    revalidatePath('/dashboard/listings');
-    return { supplierId: supplier.id };
+  .action(async () => {
+    throw new Error(
+      'Buyer and seller accounts are separate. Create a seller account at the seller portal (/signup).',
+    );
   });
 
 export async function getMySupplier(userId: string) {
   const supabase = await createSupabaseClient();
   const { data } = await supabase.from('suppliers').select('*').eq('owner_id', userId).maybeSingle();
   return data;
+}
+
+export type BuyerInquiry = {
+  id: string;
+  message: string;
+  quantity: number | null;
+  contactEmail: string;
+  createdAt: string;
+  productId: string | null;
+  supplierId: string | null;
+};
+
+export async function getMyInquiries(userId: string): Promise<BuyerInquiry[]> {
+  const supabase = await createSupabaseClient();
+  const { data, error } = await supabase
+    .from('inquiries')
+    .select('id, message, quantity, contact_email, created_at, product_id, supplier_id')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error || !data) return [];
+
+  return data.map((row) => ({
+    id: row.id,
+    message: row.message,
+    quantity: row.quantity,
+    contactEmail: row.contact_email,
+    createdAt: row.created_at,
+    productId: row.product_id,
+    supplierId: row.supplier_id,
+  }));
 }

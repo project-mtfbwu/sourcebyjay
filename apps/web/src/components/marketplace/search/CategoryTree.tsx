@@ -37,7 +37,7 @@ function CategoryNodeItem({
           <span className="w-5" />
         )}
         <Link
-          href={`${baseHref}?category=${node.slug}`}
+          href={`${baseHref}${baseHref.includes('?') ? '&' : '?'}category=${node.slug}`}
           className={`flex-1 rounded px-2 py-1.5 text-sm hover:bg-muted ${
             isActive ? 'bg-brand-primary/20 font-medium' : ''
           }`}
@@ -62,11 +62,11 @@ function CategoryNodeItem({
   );
 }
 
-export function CategoryTree({ categories, currentSlug, baseHref = '/search' }: CategoryTreeProps) {
+export function CategoryTree({ categories, currentSlug, baseHref = '/search?mode=products' }: CategoryTreeProps) {
   return (
     <nav className="space-y-0.5">
       <Link
-        href={baseHref}
+        href={baseHref.includes('?') ? baseHref : `${baseHref}?mode=products`}
         className={`block rounded px-2 py-1.5 text-sm font-medium hover:bg-muted ${
           !currentSlug ? 'bg-brand-primary/20' : ''
         }`}

@@ -1,5 +1,6 @@
 import type { HotSearch, Product } from '@/types/marketplace';
 import { getCategoryAndDescendantIds } from '@/utils/category-tree';
+import { matchesSearchText } from '@/utils/search-query';
 import { isGoldTier, isPubliclyVerified } from '@/utils/verification';
 import { getSupplierMap } from '@/data/mock/suppliers';
 import { categories } from './categories';
@@ -12,21 +13,21 @@ const pub = (p: Omit<Product, 'status' | 'unit'> & Partial<Pick<Product, 'status
 
 export const products: Product[] = [
   pub({
-    id: 'p1',
+    id: '10000001-0000-4000-8000-000000000001',
     slug: 'wireless-bluetooth-earbuds-oem',
     title: 'Wireless Bluetooth Earbuds OEM — Bulk Order',
     price: 14.9,
     currency: 'USD',
     moq: 1,
     isLocal: true,
-    imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
     images: [
-      'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&h=800&fit=crop',
-      'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=800&h=800&fit=crop',
-      'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&h=800&fit=crop',
+      '/mockups/placeholder.jpeg',
+      '/mockups/placeholder.jpeg',
+      '/mockups/placeholder.jpeg',
     ],
     categoryId: '3',
-    supplierId: 's1',
+    supplierId: '00000001-0000-4000-8000-000000000001',
     description:
       'Premium wireless Bluetooth earbuds with active noise cancellation. Available for OEM branding with custom packaging. CE/FCC certified.',
     specs: {
@@ -44,20 +45,20 @@ export const products: Product[] = [
     ],
   }),
   pub({
-    id: 'p2',
+    id: '10000002-0000-4000-8000-000000000002',
     slug: 'industrial-solar-panel-400w',
     title: 'Industrial Solar Panel 400W Monocrystalline',
     price: 75,
     currency: 'USD',
     moq: 1,
     isLocal: true,
-    imageUrl: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
     images: [
-      'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&h=800&fit=crop',
-      'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=800&h=800&fit=crop',
+      '/mockups/placeholder.jpeg',
+      '/mockups/placeholder.jpeg',
     ],
     categoryId: '10',
-    supplierId: 's1',
+    supplierId: '00000001-0000-4000-8000-000000000001',
     description:
       'High-efficiency monocrystalline solar panel rated at 400W. Ideal for commercial and industrial installations.',
     specs: {
@@ -73,18 +74,18 @@ export const products: Product[] = [
     ],
   }),
   pub({
-    id: 'p3',
+    id: '10000003-0000-4000-8000-000000000003',
     slug: 'custom-printed-packaging-boxes',
     title: 'Custom Printed Packaging Boxes — MOQ 4',
     price: 2.99,
     currency: 'USD',
     moq: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1607082348824-0a960f2a4b9d?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
     images: [
-      'https://images.unsplash.com/photo-1607082348824-0a960f2a4b9d?w=800&h=800&fit=crop',
+      '/mockups/placeholder.jpeg',
     ],
     categoryId: '6',
-    supplierId: 's2',
+    supplierId: '00000002-0000-4000-8000-000000000001',
     description: 'Fully customizable corrugated packaging boxes with full-color printing. Eco-friendly materials available.',
     specs: {
       Material: 'Corrugated cardboard',
@@ -98,19 +99,19 @@ export const products: Product[] = [
     ],
   }),
   pub({
-    id: 'p4',
+    id: '10000003-0000-4000-8000-000000000001',
     slug: 'cnc-machining-center-vmc850',
     title: 'CNC Machining Center VMC-850',
     price: 3980,
     currency: 'USD',
     moq: 1,
     isLocal: true,
-    imageUrl: 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
     images: [
-      'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=800&h=800&fit=crop',
+      '/mockups/placeholder.jpeg',
     ],
     categoryId: '8',
-    supplierId: 's3',
+    supplierId: '00000003-0000-4000-8000-000000000001',
     description: 'Vertical machining center with 850mm travel. Suitable for precision metal and plastic parts manufacturing.',
     specs: {
       'Table Size': '1000 x 500 mm',
@@ -120,19 +121,19 @@ export const products: Product[] = [
     priceTiers: [{ minQty: 1, price: 3980 }],
   }),
   pub({
-    id: 'p5',
+    id: '10000002-0000-4000-8000-000000000001',
     slug: 'organic-cotton-t-shirts-bulk',
     title: 'Organic Cotton T-Shirts — Bulk Wholesale',
     price: 0.16,
     currency: 'USD',
     moq: 100,
     soldCount: 26100,
-    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
     images: [
-      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop',
+      '/mockups/placeholder.jpeg',
     ],
     categoryId: '2',
-    supplierId: 's2',
+    supplierId: '00000002-0000-4000-8000-000000000001',
     description: 'GOTS-certified organic cotton t-shirts available in 20+ colors. Custom screen printing and embroidery.',
     specs: {
       Material: '100% Organic Cotton',
@@ -147,19 +148,19 @@ export const products: Product[] = [
     ],
   }),
   pub({
-    id: 'p6',
+    id: '10000006-0000-4000-8000-000000000006',
     slug: 'stainless-steel-water-bottles',
     title: 'Stainless Steel Insulated Water Bottles',
     price: 0.72,
     currency: 'USD',
     moq: 50,
     soldCount: 1200,
-    imageUrl: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
     images: [
-      'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&h=800&fit=crop',
+      '/mockups/placeholder.jpeg',
     ],
     categoryId: '7',
-    supplierId: 's2',
+    supplierId: '00000002-0000-4000-8000-000000000001',
     description: 'Double-wall vacuum insulated stainless steel bottles. Custom logo laser engraving available.',
     specs: {
       Capacity: '500ml / 750ml / 1000ml',
@@ -172,19 +173,19 @@ export const products: Product[] = [
     ],
   }),
   pub({
-    id: 'p7',
+    id: '10000007-0000-4000-8000-000000000007',
     slug: 'led-strip-lights-rgb',
     title: 'LED Strip Lights RGB 5050 — 5M Roll',
     price: 5.7,
     currency: 'USD',
     moq: 10,
     soldCount: 250,
-    imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
     images: [
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop',
+      '/mockups/placeholder.jpeg',
     ],
     categoryId: '11',
-    supplierId: 's1',
+    supplierId: '00000001-0000-4000-8000-000000000001',
     description: 'Flexible RGB LED strip lights with remote control and adhesive backing. IP65 waterproof option.',
     specs: {
       Type: '5050 SMD RGB',
@@ -198,19 +199,19 @@ export const products: Product[] = [
     ],
   }),
   pub({
-    id: 'p8',
+    id: '10000008-0000-4000-8000-000000000008',
     slug: 'precision-ball-bearings-6205',
     title: 'Precision Ball Bearings 6205-2RS',
     price: 0.26,
     currency: 'USD',
     moq: 100,
     soldCount: 5500,
-    imageUrl: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
     images: [
-      'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=800&fit=crop',
+      '/mockups/placeholder.jpeg',
     ],
     categoryId: '9',
-    supplierId: 's3',
+    supplierId: '00000003-0000-4000-8000-000000000001',
     description: 'High-precision deep groove ball bearings with rubber seals. ISO 9001 certified factory.',
     specs: {
       Model: '6205-2RS',
@@ -229,17 +230,17 @@ export const hotSearches: HotSearch[] = [
   {
     term: 'Sneakers',
     productSlug: 'organic-cotton-t-shirts-bulk',
-    imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
   },
   {
     term: 'Sunglasses',
     productSlug: 'wireless-bluetooth-earbuds-oem',
-    imageUrl: 'https://images.unsplash.com/photo-1572635196233-8f11f4353319?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
   },
   {
     term: 'Drones',
     productSlug: 'industrial-solar-panel-400w',
-    imageUrl: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&h=400&fit=crop',
+    imageUrl: '/mockups/placeholder.jpeg',
   },
 ];
 
@@ -253,6 +254,7 @@ export function getProductsBySupplier(supplierId: string) {
 
 export function searchProducts(filters: {
   q?: string;
+  within?: string;
   category?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -265,11 +267,14 @@ export function searchProducts(filters: {
   const supplierMap = getSupplierMap();
 
   if (filters.q) {
-    const q = filters.q.toLowerCase();
-    results = results.filter(
-      (p) =>
-        p.title.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
+    results = results.filter((p) =>
+      matchesSearchText(`${p.title} ${p.description}`, filters.q!),
+    );
+  }
+
+  if (filters.within) {
+    results = results.filter((p) =>
+      matchesSearchText(`${p.title} ${p.description}`, filters.within!),
     );
   }
 
@@ -311,6 +316,9 @@ export function searchProducts(filters: {
       break;
     case 'moq-asc':
       results.sort((a, b) => a.moq - b.moq);
+      break;
+    case 'sold-desc':
+      results.sort((a, b) => (b.soldCount ?? 0) - (a.soldCount ?? 0));
       break;
     default:
       break;

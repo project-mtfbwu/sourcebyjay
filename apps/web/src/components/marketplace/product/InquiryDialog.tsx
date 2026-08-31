@@ -24,7 +24,9 @@ interface InquiryDialogProps {
   supplierId: string;
   productTitle: string;
   productSlug: string;
-  type: 'contact' | 'rfq';
+  type: 'contact' | 'rfq' | 'sample';
+  label?: string;
+  variant?: 'default' | 'outline' | 'ghost';
 }
 
 export function InquiryDialog({
@@ -33,6 +35,8 @@ export function InquiryDialog({
   productTitle,
   productSlug,
   type,
+  label: labelProp,
+  variant: variantProp,
 }: InquiryDialogProps) {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -49,7 +53,13 @@ export function InquiryDialog({
 
   const { execute, status } = useAction(submitInquiryAction, {
     onSuccess: () => {
-      toast.success(type === 'rfq' ? 'Quote request sent!' : 'Message sent to supplier!');
+      toast.success(
+        type === 'rfq'
+          ? 'Quote request sent!'
+          : type === 'sample'
+            ? 'Sample request sent!'
+            : 'Message sent to supplier!',
+      );
       setOpen(false);
       setMessage('');
       setQuantity('');
@@ -57,11 +67,32 @@ export function InquiryDialog({
     onError: ({ error }) => toast.error(error.serverError ?? 'Failed to send'),
   });
 
-  const label = type === 'rfq' ? 'Request Quote' : 'Contact Supplier';
+  const label =
+    labelProp ??
+    (type === 'rfq' ? 'Request Quote' : type === 'sample' ? 'Request sample' : 'Contact Supplier');
+  const isPrimary = type === 'rfq';
+  const buttonVariant = variantProp ?? (isPrimary ? 'default' : 'outline');
+  const buttonClass = isPrimary
+    ? 'flex-1 bg-marketplace-accent hover:bg-marketplace-accent/90'
+    : 'flex-1';
+
+  const dialogTitle =
+    type === 'rfq'
+      ? 'Request for Quotation'
+      : type === 'sample'
+        ? 'Request a sample'
+        : 'Send inquiry';
+
+  const defaultMessage =
+    type === 'rfq'
+      ? `RFQ for ${productTitle}`
+      : type === 'sample'
+        ? `Sample request for ${productTitle}`
+        : `Inquiry about ${productTitle}`;
 
   if (!isLoggedIn) {
     return (
-      <Button asChild variant={type === 'rfq' ? 'default' : 'outline'} className={type === 'rfq' ? 'flex-1 bg-marketplace-accent hover:bg-marketplace-accent/90' : 'flex-1'}>
+      <Button asChild variant={buttonVariant} className={buttonClass}>
         <Link href={`/login?next=/products/${productSlug}`}>{label}</Link>
       </Button>
     );
@@ -70,19 +101,14 @@ export function InquiryDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant={type === 'rfq' ? 'default' : 'outline'}
-          className={type === 'rfq' ? 'flex-1 bg-marketplace-accent hover:bg-marketplace-accent/90' : 'flex-1'}
-        >
+        <Button variant={buttonVariant} className={buttonClass}>
           {label}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{type === 'rfq' ? 'Request for Quotation' : 'Contact Supplier'}</DialogTitle>
-          <DialogDescription>
-            {productTitle}
-          </DialogDescription>
+          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogDescription>{productTitle}</DialogDescription>
         </DialogHeader>
         <form
           className="space-y-4"
@@ -93,46 +119,50 @@ export function InquiryDialog({
               supplierId,
               contactEmail: email,
               quantity: quantity ? Number(quantity) : undefined,
-              message: message || (type === 'rfq' ? `RFQ for ${productTitle}` : `Inquiry about ${productTitle}`),
+              message: message || defaultMessage,
             });
           }}
         >
           <div className="space-y-2">
-            <Label htmlFor="inquiry-email">Your email</Label>
+            <Label htmlFor="inquiry-email">Email</Label>
             <Input
               id="inquiry-email"
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="buyer@company.com"
             />
           </div>
-          {type === 'rfq' && (
+          {(type === 'rfq' || type === 'sample') && (
             <div className="space-y-2">
-              <Label htmlFor="inquiry-qty">Quantity needed</Label>
+              <Label htmlFor="inquiry-qty">Quantity</Label>
               <Input
                 id="inquiry-qty"
                 type="number"
                 min={1}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
-                placeholder="e.g. 500"
               />
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="inquiry-message">Message</Label>
+            <Label htmlFor="inquiry-msg">Message</Label>
             <Textarea
-              id="inquiry-message"
+              id="inquiry-msg"
               rows={4}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder={type === 'rfq' ? 'Specify requirements, customization, delivery timeline...' : 'Your questions for the supplier...'}
+              placeholder={
+                type === 'rfq'
+                  ? 'Specify requirements, customization, delivery timeline...'
+                  : type === 'sample'
+                    ? 'Sample size, shipping address notes…'
+                    : 'Your questions for the supplier...'
+              }
             />
           </div>
-          <Button type="submit" className="w-full" disabled={status === 'executing'}>
-            {status === 'executing' ? 'Sending...' : 'Send'}
+          <Button type="submit" disabled={status === 'executing'} className="w-full">
+            {status === 'executing' ? 'Sending…' : label}
           </Button>
         </form>
       </DialogContent>

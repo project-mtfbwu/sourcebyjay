@@ -1,12 +1,12 @@
 ---
 name: sourcebyjay-figma-handoff
 description: >-
-  Figma design handoff after built UI for SourceByJay Phase 8. Use when
+  Figma design handoff after built UI for SourceByJay Phase 16. Use when
   syncing palette, tokens, and three portal design files from running app
   screenshots.
 ---
 
-# SourceByJay Figma Handoff (Phase 8)
+# SourceByJay Figma Handoff (Phase 16)
 
 Build first → Figma second → sync tokens back to code.
 
@@ -44,4 +44,4 @@ apps/web/src/styles/marketplace.css
 
 ## User approval
 
-Phase 8 ends with visual demo of Figma links + token diff. User GO before Phase 7 payments.
+Phase 16 ends with visual demo of Figma links + token diff. Optional after Phase 15 GO-LIVE.

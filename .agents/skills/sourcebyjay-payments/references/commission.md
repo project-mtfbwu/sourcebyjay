@@ -1,6 +1,6 @@
 # Platform commission
 
-Every order placed through SourceByJay charges a **platform commission** to the vendor. Commission is configured during **ops vendor onboarding** and enforced at **Stripe Connect payment** time (Phase 7).
+Every order placed through SourceByJay charges a **platform commission** to the vendor. Commission is configured during **ops vendor onboarding** and enforced at **Stripe Connect payment** time (Phase 10).
 
 ## Locked rules
 
@@ -43,7 +43,7 @@ Route: `/vendors/[id]/onboarding`
 4. Below 5%: show approval toggle — only visible if actor is super_admin or has `can_set_below_min_commission`
 5. On save: call `validate_supplier_commission()` + audit log `supplier.set_commission`
 
-## Stripe implementation (Phase 7)
+## Stripe implementation (Phase 10)
 
 Use **Connect application fees** on the PaymentIntent / Checkout Session:
 

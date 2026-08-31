@@ -1,3 +1,4 @@
+import { PORTAL_AUTH_COOKIE } from '@sourcebyjay/auth';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,6 +14,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
       {
+        cookieOptions: {
+          name: PORTAL_AUTH_COOKIE.web,
+        },
         cookies: {
           getAll() {
             return cookieStore.getAll();

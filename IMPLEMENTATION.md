@@ -401,6 +401,41 @@ Never edit migration files manually (see `AGENTS.md`).
 
 ---
 
+## Post go-live phases (not in MVP bar)
+
+### Phase 5B — Chat UX parity + seller notifications (~2–3 weeks)
+
+**Goal:** Alibaba Message Center UX on existing Supabase chat + optional seller PWA.
+
+**Depends on:** Phase 5 (done), Phase 15 (infra for push/email).
+
+| Slice | Deliverables |
+|-------|----------------|
+| A | Multi-thread sidebar, quick questions, product pin, attachments, unread badges |
+| B | Seller PWA + web push (or email fallback) for messages/RFQs |
+
+**Spec:** `.agents/skills/sourcebyjay-b2b-workflows/references/chat-ux-parity.md`
+
+**Not in scope:** Stream/Sendbird, voice/video calls (defer).
+
+---
+
+### Phase 18 — Supplier factory mini-site (~2–3 weeks)
+
+**Goal:** Alibaba-style company storefront from product detail company card.
+
+**Depends on:** Phase 1 (gallery), Phase 14 (video tab optional).
+
+| Slice | Deliverables |
+|-------|----------------|
+| A | Mobile-first `/suppliers/[slug]`, PDP company card, `?productId=` banner, sticky contact bar |
+| B | Business+ `/factory/{slug}` mini-site mode |
+| C | Vendor storefront preview + edit in `:3001` |
+
+**Spec:** `.agents/skills/sourcebyjay-b2b-workflows/references/supplier-factory-minisite.md`
+
+---
+
 ## CI / security (runs every phase)
 
 | Check | When |

@@ -2,7 +2,7 @@ import type { Supplier } from '@/types/marketplace';
 
 export const suppliers: Supplier[] = [
   {
-    id: 's1',
+    id: '00000001-0000-4000-8000-000000000001',
     slug: 'jaytech-industries',
     name: 'JayTech Industries Co.',
     verified: true,
@@ -14,10 +14,10 @@ export const suppliers: Supplier[] = [
     mainProducts: 'Electronics, Industrial Components',
     description:
       'JayTech Industries is a verified manufacturer specializing in consumer electronics and industrial components. We serve B2B buyers across 40+ countries with OEM/ODM capabilities.',
-    bannerUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&h=300&fit=crop',
+    bannerUrl: '/mockups/placeholder.jpeg',
   },
   {
-    id: 's2',
+    id: '00000002-0000-4000-8000-000000000001',
     slug: 'global-source-trading',
     name: 'Global Source Trading Ltd.',
     verified: true,
@@ -29,10 +29,10 @@ export const suppliers: Supplier[] = [
     mainProducts: 'Textiles, Apparel, Packaging',
     description:
       'Global Source Trading connects international buyers with quality textile and packaging manufacturers across South Asia.',
-    bannerUrl: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&h=300&fit=crop',
+    bannerUrl: '/mockups/placeholder.jpeg',
   },
   {
-    id: 's3',
+    id: '00000003-0000-4000-8000-000000000001',
     slug: 'precision-parts-co',
     name: 'Precision Parts Co.',
     verified: false,
@@ -44,7 +44,7 @@ export const suppliers: Supplier[] = [
     mainProducts: 'Machinery Parts, Tools',
     description:
       'Precision Parts Co. manufactures high-quality machinery components and tools for industrial buyers worldwide.',
-    bannerUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1200&h=300&fit=crop',
+    bannerUrl: '/mockups/placeholder.jpeg',
   },
 ];
 

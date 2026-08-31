@@ -25,7 +25,8 @@ const variantSchema = z.object({
   options: z.array(z.string().min(1)).min(1),
 });
 
-export const listingInputSchema = z.object({
+/** Not exported — Next.js `'use server'` files may only export async functions. */
+const listingInputSchema = z.object({
   title: z.string().min(3).max(200),
   description: z.string().min(10).max(5000),
   categoryId: z.string().min(1),

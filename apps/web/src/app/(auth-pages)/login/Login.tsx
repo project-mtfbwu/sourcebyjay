@@ -14,9 +14,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   signInWithMagicLinkAction,
-  signInWithPasswordAction,
   signInWithProviderAction,
 } from '@/data/auth/auth';
+import { createClient } from '@/supabase-clients/client';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -25,24 +25,19 @@ import ShinyText from '@/components/ShinyText';
 
 export function Login({
   next,
+  authError,
 }: {
   next?: string;
+  authError?: 'staff_account' | 'seller_account';
 }) {
   const [emailSentSuccessMessage, setEmailSentSuccessMessage] = useState<
     string | null
   >(null);
   const [redirectInProgress, setRedirectInProgress] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
   const toastRef = useRef<string | number | undefined>(undefined);
 
   const router = useRouter();
-
-  function redirectToDashboard() {
-    if (next) {
-      router.push(`/auth/callback?next=${next}`);
-    } else {
-      router.push('/dashboard');
-    }
-  }
 
   const { execute: executeMagicLink, status: magicLinkStatus } = useAction(
     signInWithMagicLinkAction,
@@ -57,44 +52,15 @@ export function Login({
         toastRef.current = undefined;
         setEmailSentSuccessMessage('A magic link has been sent to your email!');
       },
-      onError: (error) => {
+      onError: ({ error }) => {
         const errorMessage =
-          error instanceof Error
-            ? error.message
-            : `Send magic link failed ${String(error)}`;
+          error.serverError ?? 'Failed to send magic link. Try again.';
         toast.error(errorMessage, {
           id: toastRef.current,
         });
         toastRef.current = undefined;
       },
-    }
-  );
-
-  const { execute: executePassword, status: passwordStatus } = useAction(
-    signInWithPasswordAction,
-    {
-      onExecute: () => {
-        toastRef.current = toast.loading('Logging in...');
-      },
-      onSuccess: () => {
-        toast.success('Logged in!', {
-          id: toastRef.current,
-        });
-        toastRef.current = undefined;
-        redirectToDashboard();
-        setRedirectInProgress(true);
-      },
-      onError: (error) => {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : `Sign in account failed ${String(error)}`;
-        toast.error(errorMessage, {
-          id: toastRef.current,
-        });
-        toastRef.current = undefined;
-      },
-    }
+    },
   );
 
   const { execute: executeProvider, status: providerStatus } = useAction(
@@ -110,14 +76,69 @@ export function Login({
         toastRef.current = undefined;
         window.location.href = payload.data?.url || '/';
       },
-      onError: () => {
-        toast.error('Failed to login', {
+      onError: ({ error }) => {
+        toast.error(error.serverError ?? 'Failed to login', {
           id: toastRef.current,
         });
         toastRef.current = undefined;
       },
-    }
+    },
   );
+
+  async function handlePasswordLogin(data: { email: string; password: string }) {
+    setPasswordLoading(true);
+    toastRef.current = toast.loading('Logging in...');
+    try {
+      // Browser client writes the buyer cookie — survives new tabs.
+      const supabase = createClient();
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+      if (error) {
+        throw new Error(
+          error.message.toLowerCase().includes('invalid')
+            ? 'Wrong email or password. Try again or use Forgot password.'
+            : error.message,
+        );
+      }
+
+      const userId = authData.user?.id;
+      if (userId) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', userId)
+          .maybeSingle();
+        if (profile?.role === 'seller') {
+          await supabase.auth.signOut();
+          throw new Error(
+            'That email is a seller account. Use Seller portal (localhost:3001), or create a separate buyer email.',
+          );
+        }
+
+        const { data: isStaff } = await supabase.rpc('is_active_staff');
+        if (isStaff) {
+          await supabase.auth.signOut();
+          throw new Error(
+            'That email is an ops staff account. Use the ops portal (localhost:3002), or create a separate buyer email.',
+          );
+        }
+      }
+
+      toast.success('Logged in!', { id: toastRef.current });
+      toastRef.current = undefined;
+      setRedirectInProgress(true);
+      // Full navigation so every tab/route picks up the cookie.
+      window.location.href = next ? next : '/';
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Login failed', {
+        id: toastRef.current,
+      });
+      toastRef.current = undefined;
+      setPasswordLoading(false);
+    }
+  }
 
   return (
     <div
@@ -133,8 +154,8 @@ export function Login({
         />
       ) : redirectInProgress ? (
         <RedirectingPleaseWaitCard
-          message="Please wait while we redirect you to your dashboard."
-          heading="Redirecting to Dashboard"
+          message="Please wait while we redirect you."
+          heading="Logged in"
         />
       ) : (
         <div className="space-y-8 bg-background p-6 rounded-lg shadow-sm dark:border">
@@ -156,14 +177,37 @@ export function Login({
                     />
                   </CardTitle>
                   <CardDescription>
-                    Login with the account you used to signup.
+                    Buyer accounts only. Use a <strong>different email</strong> than your seller
+                    login (Seller Central is on port 3001). Ops staff use{' '}
+                    <a href="http://localhost:3002/login" className="text-primary underline">
+                      port 3002
+                    </a>
+                    .
                   </CardDescription>
+                  {authError === 'staff_account' ? (
+                    <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+                      That session was an <strong>ops staff</strong> account. Sign in at{' '}
+                      <a href="http://localhost:3002/login" className="underline">
+                        localhost:3002
+                      </a>{' '}
+                      or use a separate buyer email here.
+                    </p>
+                  ) : null}
+                  {authError === 'seller_account' ? (
+                    <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+                      Seller accounts belong on{' '}
+                      <a href="http://localhost:3001/login" className="underline">
+                        localhost:3001
+                      </a>
+                      .
+                    </p>
+                  ) : null}
                 </CardHeader>
                 <CardContent className="space-y-2 p-0">
                   <EmailAndPassword
-                    isLoading={passwordStatus === 'executing'}
+                    isLoading={passwordLoading}
                     onSubmit={(data) => {
-                      executePassword({
+                      void handlePasswordLogin({
                         email: data.email,
                         password: data.password,
                       });
@@ -218,7 +262,7 @@ export function Login({
                     providers={['google', 'github', 'twitter']}
                     isLoading={providerStatus === 'executing'}
                     onProviderLoginRequested={(
-                      provider: 'google' | 'github' | 'twitter'
+                      provider: 'google' | 'github' | 'twitter',
                     ) => executeProvider({ provider, next })}
                   />
                 </CardContent>

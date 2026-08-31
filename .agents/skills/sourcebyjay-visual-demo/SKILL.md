@@ -10,6 +10,20 @@ description: >-
 
 **User decision is final.** Agent provides suggestions only. Never advance phase without explicit **GO**.
 
+## Never go lazy (Owner rule — permanent)
+
+When one portal in the monorepo already has a **polished CRM shell** (sidebar, KPI dashboard, styled forms), **never ship another portal at MVP/plain HTML** if the Owner will use both. Match visual density across buyer / seller / ops before calling a phase “done” for visual review.
+
+| If this exists… | Then new work must… |
+|-----------------|---------------------|
+| Ops `OpsShell` + dashboard widgets | Seller gets `VendorShell` + equivalent KPIs (green branding) |
+| Searchable location pickers on seller signup | Same on buyer business profile + account profile |
+| shadcn forms on buyer `:3000` | Seller forms use CRM `form-grid` + sections, not raw inline styles |
+
+**Lazy = blocked.** Plain centered column + repeated nav links when a sidebar pattern exists in-repo is a process defect, not “we’ll polish later.”
+
+When asking the user to look at the demo, use [beginner-eli5](../sourcebyjay-beginner-eli5/SKILL.md): what this screen is, why it matters, what to click, what “good” looks like.
+
 ## When to run
 
 1. All phase deliverables implemented
@@ -62,9 +76,9 @@ Keep to 3 bullets max.
 | `HOLD` | Set `on_hold`; no new features |
 | `CHANGE: …` | Implement feedback; re-run full demo |
 
-## Figma note (Phase 8)
+## Figma note (Phase 16)
 
-Phase 8 demo = links to 3 Figma files + token export, not localhost only.
+Phase 16 demo = links to 3 Figma files + token export, not localhost only.
 
 ## Do not
 

@@ -18,6 +18,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
+  requestBuyerPhoneOtpAction,
   signInWithMagicLinkAction,
   signInWithProviderAction,
   signUpAction,
@@ -70,6 +71,10 @@ export function SignUp({ next }: SignUpProps) {
         toastRef.current = undefined;
       },
     }
+  );
+
+  const { executeAsync: executeRequestOtp, status: otpStatus } = useAction(
+    requestBuyerPhoneOtpAction,
   );
 
   const { execute: executeProvider, status: providerStatus } = useAction(
@@ -125,8 +130,32 @@ export function SignUp({ next }: SignUpProps) {
                 <CardContent className="space-y-2 p-0">
                   <EmailAndPassword
                     isLoading={signUpStatus === 'executing'}
+                    otpLoading={otpStatus === 'executing'}
+                    onRequestOtp={async (phone) => {
+                      try {
+                        const result = await executeRequestOtp({ phone });
+                        if (result?.serverError) {
+                          return { ok: false, error: result.serverError };
+                        }
+                        return {
+                          ok: true,
+                          devCode: result?.data?.devCode ?? null,
+                        };
+                      } catch (err) {
+                        return {
+                          ok: false,
+                          error: err instanceof Error ? err.message : 'OTP failed',
+                        };
+                      }
+                    }}
                     onSubmit={(data) => {
-                      executeSignUp({ ...data, next });
+                      executeSignUp({
+                        email: data.email,
+                        password: data.password,
+                        phone: data.phone ?? '',
+                        otpCode: data.otpCode ?? '',
+                        fullName: data.fullName,
+                      });
                     }}
                     view="sign-up"
                   />

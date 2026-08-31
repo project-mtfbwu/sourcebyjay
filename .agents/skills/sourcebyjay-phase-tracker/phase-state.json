@@ -1,11 +1,44 @@
 {
   "project": "SourceByJay",
-  "currentPhase": "1",
-  "currentPhaseStatus": "in_progress",
-  "completedPhases": ["0", "S0"],
-  "awaitingUserVisualApproval": false,
-  "lastVisualReview": "2026-08-23",
-  "userDecision": "go",
+  "vision": "Alibaba alternative for India + international buyers — MVP go-live requires phases S0 through 15, 17, and 18 (factory mini-site)",
+  "roadmapVersion": "2026-08-24-guarantee-i18n-plans",
+  "roadmapDoc": ".agents/skills/sourcebyjay-architecture/references/ALIBABA-INDIA-MVP.md",
+  "alibabaParallelsDoc": ".agents/skills/sourcebyjay-architecture/references/alibaba-parallels.md",
+  "currentPhase": "15",
+  "currentPhaseStatus": "awaiting_visual_review",
+  "completedPhases": ["0", "S0", "1", "2", "17", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12-compliance", "13", "14", "18"],
+  "awaitingUserVisualApproval": true,
+  "lastVisualReview": {
+    "phase": "18",
+    "at": "2026-08-30",
+    "decision": "go",
+    "catchUp": "APPROVE catch-up",
+    "audit": ".agents/skills/sourcebyjay-vomit-protocol/references/AUDIT-PHASE-18.md"
+  },
+  "userDecision": null,
+  "notes": "Phase 15 code wired: Sentry + PostHog on web/vendor/ops, Inngest jobs on web, Resend helper, health routes, go-live checklist. Owner: deploy + sign checklist, then visual demo GO.",
+  "plannedPhases": {
+    "5B": {
+      "name": "Chat UX parity + seller notifications",
+      "timing": "post_go_live",
+      "afterPhase": "15",
+      "spec": ".agents/skills/sourcebyjay-b2b-workflows/references/chat-ux-parity.md",
+      "slices": ["buyer_message_center_ux", "seller_pwa_push"],
+      "ownerApprovedPlanning": "2026-08-28"
+    },
+    "18": {
+      "name": "Supplier factory mini-site (Alibaba company storefront)",
+      "timing": "pre_go_live_recommended",
+      "afterPhase": "14",
+      "beforePhase": "15",
+      "spec": ".agents/skills/sourcebyjay-b2b-workflows/references/supplier-factory-minisite.md",
+      "slices": ["enhanced_factory_page", "business_plus_minisite", "vendor_storefront_editor"],
+      "ownerApprovedPlanning": "2026-08-28",
+      "alibabaReference": "company subdomain mobile storefront from PDP company card",
+      "completedAt": "2026-08-30",
+      "catchUpApproved": "2026-08-30"
+    }
+  },
   "phaseHistory": [
     {
       "phase": "0",
@@ -20,8 +53,126 @@
       "completedAt": "2026-08-23",
       "userApproved": true,
       "notes": "Headers, rate limits, legal pages, CI config, skills. Manual: push CI, Docker migrations, prod Supabase, 2FA"
+    },
+    {
+      "phase": "1",
+      "name": "Trust & supplier media",
+      "completedAt": "2026-08-25",
+      "userApproved": true,
+      "notes": "Gold badge, factory tour, gold search, home recent searches. User GO via next"
+    },
+    {
+      "phase": "2",
+      "name": "Three portals + account split",
+      "completedAt": "2026-08-25",
+      "userApproved": true,
+      "notes": "Buyer/seller separate profiles; vendor+ops scaffolds; ops form_field_configs toggles; phone OTP (dev code 123456)."
+    },
+    {
+      "phase": "17",
+      "name": "Vendor listing plans",
+      "completedAt": "2026-08-25",
+      "userApproved": true,
+      "notes": "Free→Enterprise tiers; seller Choose plan; paid pending + ops approve; listing caps. User: working, go next"
+    },
+    {
+      "phase": "3",
+      "name": "B2B order flow + fake payment slab",
+      "completedAt": "2026-08-26",
+      "userApproved": true,
+      "notes": "quotes/orders/payments fake; portal cookie isolation; user next = GO"
+    },
+    {
+      "phase": "4",
+      "name": "Multi-supplier RFQ",
+      "completedAt": "2026-08-26",
+      "userApproved": true,
+      "notes": "Broadcast RFQ from search; one RFQ per supplier; slider + cart; sort fix; user next = GO"
+    },
+    {
+      "phase": "5",
+      "name": "Chat",
+      "completedAt": "2026-08-26",
+      "userApproved": true,
+      "notes": "conversations/messages + Realtime; Alibaba on-page drawer; vendor /messages; user sorted = GO"
+    },
+    {
+      "phase": "6",
+      "name": "Reviews, favorites, compare",
+      "completedAt": "2026-08-26",
+      "userApproved": true,
+      "notes": "Favorites heart overlay; compare tray; verified reviews; request-listing; user next = GO"
+    },
+    {
+      "phase": "7",
+      "name": "Search & discovery",
+      "completedAt": "2026-08-26",
+      "userApproved": true,
+      "notes": "Products/suppliers modes, facets, typeahead, trending; GO + APPROVE catch-up"
+    },
+    {
+      "phase": "8",
+      "name": "AI + image search",
+      "completedAt": "2026-08-26",
+      "userApproved": true,
+      "notes": "Groq AI Mode + camera image search; Owner GO to Phase 9"
+    },
+    {
+      "phase": "9",
+      "name": "SourceByJay Guarantee + disputes",
+      "completedAt": "2026-08-27",
+      "userApproved": true,
+      "notes": "Badge, filter, fake escrow, disputes web/vendor/ops; Owner GO via start Phase 10"
+    },
+    {
+      "phase": "10",
+      "name": "Payments rehearsal (10A)",
+      "completedAt": "2026-08-27",
+      "userApproved": true,
+      "notes": "Fake pay→escrow→invoice→refund. Stripe = 10B later. Owner GO."
+    },
+    {
+      "phase": "11",
+      "name": "Logistics / freight",
+      "completedAt": "2026-08-28",
+      "userApproved": true,
+      "notes": "Incoterms, freight estimate, pincode zones. Owner GO."
+    },
+    {
+      "phase": "12-compliance",
+      "name": "India compliance (no i18n)",
+      "completedAt": "2026-08-28",
+      "userApproved": true,
+      "notes": "PAN/GSTIN/HSN, buyer business profiles, seller CRM shell + location pickers. i18n deferred. User: ok next phase = GO."
+    },
+    {
+      "phase": "13",
+      "name": "Ad campaigns (CPC + hybrid)",
+      "completedAt": "2026-08-30",
+      "userApproved": true,
+      "notes": "Hybrid ads CPC/CPM/sponsorship; creative studio; search placements"
+    },
+    {
+      "phase": "14",
+      "name": "Video media + Chonky2 file browser",
+      "completedAt": "2026-08-30",
+      "userApproved": true,
+      "notes": "Factory Videos tab, product video, media library Chonky2, same-page upload, layer sliders, vendor e2e. User: ok next phase = GO."
+    },
+    {
+      "phase": "18",
+      "name": "Supplier factory mini-site",
+      "completedAt": "2026-08-30",
+      "userApproved": true,
+      "catchUp": "APPROVE catch-up",
+      "notes": "Factory page + /factory/{slug}; storefront studio live preview; versions→ops; Unsplash removed; media proxies; version UX fixes. Audit: AUDIT-PHASE-18.md"
     }
   ],
-  "nextPhaseAfterApproval": "2",
-  "manualChecklist": ".agents/skills/sourcebyjay-phase-tracker/references/s0-manual-checklist.md"
+  "nextPhaseAfterApproval": "5B",
+  "phaseOrder": ["S0", "1", "2", "17", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "12-compliance", "13", "14", "18", "15", "5B", "16"],
+  "postGoLivePhases": ["5B", "16"],
+  "preGoLiveRecommended": [],
+  "goLivePhases": ["S0", "1", "2", "17", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12-compliance", "13", "14", "18", "15"],
+  "manualChecklist": ".agents/skills/sourcebyjay-phase-tracker/references/s0-manual-checklist.md",
+  "goLiveChecklist": ".agents/skills/sourcebyjay-phase-tracker/references/phase15-go-live-checklist.md"
 }

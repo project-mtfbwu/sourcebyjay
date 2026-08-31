@@ -33,6 +33,13 @@ DB helper: `staff_has_min_role(min_role)` — use in RLS policies.
 | Set gold/verified tier | ✓ | ✓ | ✓ | — |
 | Approve factory/godown images | ✓ | ✓ | ✓ | — |
 | Set vendor commission (≥ min, default 5%) | ✓ | ✓ | ✓ | — |
+| Create ad campaign for vendor (on behalf) | ✓ | ✓ | ✓ | — |
+| Edit/pause any vendor ad campaign | ✓ | ✓ | ✓ | — |
+| Approve/reject flagged ad campaign | — | ✓ | ✓ | — |
+| Grant ad wallet credit | — | ✓ | ✓ | — |
+| Set platform min CPC floor | — | — | ✓ | — |
+| Manage vendor subscription / comp plan | ✓ | ✓ | ✓ | — |
+| Edit listing plan prices (platform) | — | — | ✓ | — |
 | Approve commission below minimum | ✓ | delegated* | — | — |
 | Change platform default/min commission | ✓ | — | — | — |
 | Grant below-min commission permission | ✓ | — | — | — |
@@ -59,6 +66,10 @@ DB helper: `staff_has_min_role(min_role)` — use in RLS policies.
 /storefront-queue
 /buyers
 /orders (disputes)
+/advertising
+/vendors/[id]/advertising
+/vendors/[id]/subscription
+/plans
 /staff (admin+)
 /audit-log
 ```
@@ -75,7 +86,9 @@ await supabase.from('audit_logs').insert({
 });
 ```
 
-Log: approve/reject storefront, tier changes, gallery approval, **commission changes**, staff changes, suspensions.
+Log: approve/reject storefront, tier changes, gallery approval, **commission changes**, **ad campaigns (on behalf of vendor)**, staff changes, suspensions.
+
+Ad campaigns spec: [ad-campaigns.md](../sourcebyjay-b2b-workflows/references/ad-campaigns.md).
 
 ## Vendor approval flows
 

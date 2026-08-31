@@ -8,6 +8,8 @@ description: >-
 
 # SourceByJay Architecture
 
+**Vision:** Alibaba alternative for India + international buyers — full MVP scope in [ALIBABA-INDIA-MVP.md](references/ALIBABA-INDIA-MVP.md) · [alibaba-parallels.md](references/alibaba-parallels.md).
+
 ## Three portals · one backend
 
 | Portal | Domain | App | Users |
@@ -44,7 +46,9 @@ sourcebyjay/
 | `seller` | vendor app |
 | `staff_members.*` | ops app (by role rank) |
 
-Middleware on each app redirects wrong portal → correct signup/login.
+**Session isolation:** each portal uses its own Supabase auth cookie name (`PORTAL_AUTH_COOKIE` in `@sourcebyjay/auth`). Required on localhost (same host, different ports) so seller login cannot overwrite buyer login.
+
+Middleware on each app redirects wrong portal → correct signup/login. Buyer `/account` rejects `seller` role with a CTA to the vendor portal.
 
 ## Data access layers
 

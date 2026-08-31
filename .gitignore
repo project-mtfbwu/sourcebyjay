@@ -25,6 +25,9 @@ yarn-error.log*
 # playwright
 test-results/
 playwright/.auth/
+apps/vendor/e2e/.auth/
+apps/vendor/test-results/
+apps/vendor/playwright-report/
 
 # Legacy ascii/one CLI ignore file
 .oneignore

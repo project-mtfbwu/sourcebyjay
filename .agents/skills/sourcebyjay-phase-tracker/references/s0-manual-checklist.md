@@ -34,10 +34,17 @@ GitHub → **Settings** → **Branches** → **Add rule** for `main`:
 
 ---
 
-## S0.3 + S0.4 — Run security migration (needs Docker)
+## S0.3 + S0.4 — Run security migration (needs Colima)
 
-1. Start **Docker Desktop**
-2. From repo root:
+**What this is:** Local database in containers. On this Mac the engine is **Colima**, not Docker Desktop.
+
+**Why:** Schema files are in git; they are not applied until the local DB is running.
+
+**How:**
+
+1. Start Colima (once per reboot): `colima start --cpu 4 --memory 8`
+2. Confirm: `docker info` prints a server version (no sock error)
+3. From repo root:
 
 ```bash
 pnpm database#start

@@ -12,7 +12,12 @@ type SupabaseStatus = {
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
 const databaseDir = path.join(repoRoot, "apps/database");
-const envFiles = [path.join(repoRoot, ".env.local")];
+const envFiles = [
+  path.join(repoRoot, ".env.local"),
+  path.join(repoRoot, "apps/web/.env.local"),
+  path.join(repoRoot, "apps/vendor/.env.local"),
+  path.join(repoRoot, "apps/ops/.env.local"),
+];
 
 async function main(): Promise<void> {
   const statusOutput = await runSupabaseStatus();
@@ -161,6 +166,9 @@ function rewriteEnvFile(content: string, values: SupabaseStatus): string {
   const updates: Record<string, string> = {
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: values.PUBLISHABLE_KEY,
     SUPABASE_SECRET_KEY: values.SECRET_KEY,
+    NEXT_PUBLIC_BUYER_URL: "http://localhost:3000",
+    NEXT_PUBLIC_VENDOR_URL: "http://localhost:3001",
+    NEXT_PUBLIC_OPS_URL: "http://localhost:3002",
   };
   const keys = Object.keys(updates);
   const seen = new Set<string>();

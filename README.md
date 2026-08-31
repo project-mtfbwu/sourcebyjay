@@ -57,7 +57,7 @@ NextBase compresses all of that prior art into a maintained, opinionated starter
 - **Next.js 16 Cache Components (`cacheComponents: true`).** Static-by-default rendering with surgical `"use cache"` boundaries, plus a written guide ([`docs/NEXTJS_CACHE_COMPONENTS.md`](./docs/NEXTJS_CACHE_COMPONENTS.md)) explaining exactly when and how to use each primitive.
 - **Suspense-first data fetching** via `createSuspenseResource` and TanStack Query — clean loading boundaries, no waterfall fetches.
 - **Turbopack dev server** for sub-second HMR on real-world component trees.
-- **Optimized `next/image` remote patterns** preconfigured for Supabase Storage and Unsplash.
+- **Optimized `next/image` remote patterns** preconfigured for Supabase Storage.
 
 ### UI & Developer Experience
 - **shadcn/ui pre-installed** with the full Radix primitive set (40+ components: dialogs, command palettes, sidebars, sheets, toasts, hover cards, OTP input, …) — ready to copy, paste, and customize.

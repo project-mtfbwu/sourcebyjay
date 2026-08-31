@@ -20,7 +20,7 @@ INSERT INTO public.suppliers (id, slug, name, verified, country, city, years_in_
     '98%',
     'Electronics, Industrial Components',
     'JayTech Industries is a verified manufacturer specializing in consumer electronics and industrial components.',
-    'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&h=300&fit=crop'
+    '/mockups/placeholder.jpeg'
   ),
   (
     '00000002-0000-4000-8000-000000000001'::uuid,
@@ -33,7 +33,7 @@ INSERT INTO public.suppliers (id, slug, name, verified, country, city, years_in_
     '95%',
     'Textiles, Apparel, Packaging',
     'Global Source Trading connects international buyers with quality textile and packaging manufacturers.',
-    'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&h=300&fit=crop'
+    '/mockups/placeholder.jpeg'
   ),
   (
     '00000003-0000-4000-8000-000000000001'::uuid,
@@ -46,7 +46,7 @@ INSERT INTO public.suppliers (id, slug, name, verified, country, city, years_in_
     '92%',
     'Machinery Parts, Tools',
     'Precision Parts Co. manufactures high-quality machinery components and tools.',
-    'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1200&h=300&fit=crop'
+    '/mockups/placeholder.jpeg'
   )
 ON CONFLICT (slug) DO NOTHING;
 
@@ -58,8 +58,8 @@ INSERT INTO public.products (id, slug, title, price, moq, is_local, image_url, i
     14.90,
     1,
     true,
-    'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop',
-    '["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&h=800&fit=crop"]'::jsonb,
+    '/mockups/placeholder.jpeg',
+    '["/mockups/placeholder.jpeg"]'::jsonb,
     'c0000001-0000-4000-8000-000000000002',
     '00000001-0000-4000-8000-000000000001'::uuid,
     'Premium wireless Bluetooth earbuds with active noise cancellation.',
@@ -74,8 +74,8 @@ INSERT INTO public.products (id, slug, title, price, moq, is_local, image_url, i
     0.16,
     100,
     false,
-    'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop',
-    '["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop"]'::jsonb,
+    '/mockups/placeholder.jpeg',
+    '["/mockups/placeholder.jpeg"]'::jsonb,
     'c0000001-0000-4000-8000-000000000001',
     '00000002-0000-4000-8000-000000000001'::uuid,
     'GOTS-certified organic cotton t-shirts available in 20+ colors.',
@@ -90,8 +90,8 @@ INSERT INTO public.products (id, slug, title, price, moq, is_local, image_url, i
     3980.00,
     1,
     true,
-    'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=400&h=400&fit=crop',
-    '["https://images.unsplash.com/photo-1565043666747-69f6646db940?w=800&h=800&fit=crop"]'::jsonb,
+    '/mockups/placeholder.jpeg',
+    '["/mockups/placeholder.jpeg"]'::jsonb,
     'c0000001-0000-4000-8000-000000000003',
     '00000003-0000-4000-8000-000000000001'::uuid,
     'Vertical machining center with 850mm travel.',

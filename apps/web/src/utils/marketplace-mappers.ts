@@ -43,5 +43,9 @@ export function mapDbProduct(row: DbProductRow): Product {
     variants: (row.variants as unknown as ListingVariant[]) ?? [],
     sampleAvailable: row.sample_available,
     customizationAvailable: row.customization_available,
+    hsnCode: (row as { hsn_code?: string | null }).hsn_code ?? null,
+    gstRateBps: (row as { gst_rate_bps?: number | null }).gst_rate_bps ?? null,
+    videoUrl: (row as { video_url?: string | null }).video_url ?? null,
+    productVideoEnabled: Boolean((row as { product_video_enabled?: boolean }).product_video_enabled),
   };
 }

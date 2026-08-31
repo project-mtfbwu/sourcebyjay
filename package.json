@@ -10,6 +10,8 @@
   "scripts": {
     "dev": "turbo run dev --parallel",
     "web#dev": "turbo run dev --filter=web",
+    "vendor#dev": "turbo run dev --filter=vendor",
+    "ops#dev": "turbo run dev --filter=ops",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
