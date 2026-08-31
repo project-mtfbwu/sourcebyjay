@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "posthog-js": "^1.261.0",
+    "posthog-js": "^1.422.4",
     "resend": "^6.0.1",
     "server-only": "^0.0.1"
   },
