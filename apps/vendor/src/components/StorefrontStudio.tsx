@@ -13,7 +13,7 @@ import { StorefrontFeaturedProducts, type StorefrontCatalogProduct } from '@/com
 import { StorefrontMainCategoriesPicker } from '@/components/StorefrontMainCategoriesPicker';
 import { StorefrontMediaField } from '@/components/StorefrontMediaField';
 import { StorefrontProfileFacts, type StorefrontProfileFacts as ProfileFacts } from '@/components/StorefrontProfileFacts';
-import type { BrowserAsset, BrowserFolder } from '@/components/SupplierFileBrowser';
+import type { BrowserAsset } from '@/components/SupplierFileBrowser';
 import {
   createStorefrontVersionAction,
   saveStorefrontDraftAction,
@@ -37,7 +37,6 @@ type Props = {
   catalogProducts: StorefrontCatalogProduct[];
   categoryOptions: StorefrontCategoryOption[];
   mediaAssets: BrowserAsset[];
-  mediaFolders: BrowserFolder[];
   versions: StorefrontVersionRow[];
   editableDraftId: string | null;
   initialVersionId: string | null;
@@ -80,7 +79,6 @@ export function StorefrontStudio({
   catalogProducts,
   categoryOptions,
   mediaAssets,
-  mediaFolders,
   versions,
   editableDraftId,
   initialVersionId,
@@ -366,7 +364,6 @@ export function StorefrontStudio({
                 assetId={draft.bannerAssetId}
                 aspect="banner"
                 assets={mediaAssets}
-                folders={mediaFolders}
                 onPick={(url, assetId) => patchDraft({ bannerUrl: url, bannerAssetId: assetId })}
               />
               <StorefrontMediaField
@@ -376,7 +373,6 @@ export function StorefrontStudio({
                 assetId={draft.logoAssetId}
                 aspect="logo"
                 assets={mediaAssets}
-                folders={mediaFolders}
                 onPick={(url, assetId) => patchDraft({ logoUrl: url, logoAssetId: assetId })}
               />
             </fieldset>

@@ -43,7 +43,6 @@ export default async function VendorStorefrontPage({
     { data: supplierRow },
     { data: profileRow },
     { data: versionRows },
-    { data: folders },
     { data: assets },
     { data: products },
     { data: categories },
@@ -65,11 +64,6 @@ export default async function VendorStorefrontPage({
       .eq('supplier_id', supplier.id)
       .order('version_number', { ascending: false })
       .limit(20),
-    supabase
-      .from('supplier_media_folders')
-      .select('id, name, sort_order')
-      .eq('supplier_id', supplier.id)
-      .order('sort_order'),
     supabase
       .from('supplier_media_assets')
       .select('id, public_url, content_kind, caption, folder_id, status, created_at, file_size_bytes')
@@ -145,13 +139,6 @@ export default async function VendorStorefrontPage({
   const initialVersionId = picked?.id ?? null;
   const initialStatus = picked?.status ?? 'draft';
 
-  const seen = new Set<string>();
-  const folderList = (folders ?? []).filter((f) => {
-    if (seen.has(f.name)) return false;
-    seen.add(f.name);
-    return true;
-  });
-
   return (
     <VendorAuthenticated
       title="Storefront"
@@ -191,7 +178,6 @@ export default async function VendorStorefrontPage({
           createdAt: a.created_at as string,
           fileSizeBytes: a.file_size_bytes as number | null,
         }))}
-        mediaFolders={folderList.map((f) => ({ id: f.id as string, name: f.name as string }))}
         versions={versions.map(({ payload: _p, ...rest }) => rest)}
         editableDraftId={editableVersion?.id ?? null}
         initialVersionId={initialVersionId}

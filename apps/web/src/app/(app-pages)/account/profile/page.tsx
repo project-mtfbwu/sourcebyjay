@@ -33,7 +33,7 @@ async function ProfileContent() {
         <Link href="/account/inquiries" className="text-muted-foreground hover:text-foreground">
           My inquiries
         </Link>
-        {(profile.role === 'seller' || profile.role === 'admin') && (
+        {(profile.role === 'seller' || profile.role === 'admin' || Boolean(supplier)) && (
           <>
             <span className="text-muted-foreground">·</span>
             <a href={vendorUrl} className="text-brand-primary hover:underline">
@@ -42,7 +42,7 @@ async function ProfileContent() {
           </>
         )}
       </div>
-      <ProfilePageClient profile={profile} hasSupplier={Boolean(supplier)} />
+      <ProfilePageClient profile={profile} />
     </div>
   );
 }

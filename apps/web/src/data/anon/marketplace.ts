@@ -90,7 +90,14 @@ async function fetchDbCategories(): Promise<Category[]> {
 
   const { data, error } = await supabase.from('categories').select('*').order('name');
   if (error || !data?.length) return mockCategories;
-  return data.map(mapDbCategory);
+  return data.map((row) =>
+    mapDbCategory({
+      id: row.id,
+      name: row.name,
+      slug: row.slug,
+      parent_id: (row as { parent_id?: string | null }).parent_id ?? null,
+    }),
+  );
 }
 
 export async function getCategories() {

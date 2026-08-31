@@ -1,10 +1,10 @@
 import { observabilityStatus } from '@sourcebyjay/observability';
+import { connection } from 'next/server';
 import { NextResponse } from 'next/server';
-
-export const dynamic = 'force-dynamic';
 
 /** Dev-only: shows which Phase 15 integrations have env keys set. */
 export async function GET() {
+  await connection();
   if (process.env.NODE_ENV === 'production') {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }

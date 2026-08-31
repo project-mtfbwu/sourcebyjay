@@ -1,9 +1,9 @@
 import { observabilityStatus } from '@sourcebyjay/observability';
+import { connection } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export const dynamic = 'force-dynamic';
-
 export async function GET() {
+  await connection();
   return NextResponse.json({
     ok: true,
     portal: 'web',

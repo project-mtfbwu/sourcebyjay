@@ -34,9 +34,9 @@ export const broadcastRfqAction = authActionClient
         product_id: t.productId ?? null,
       })),
       p_message: parsedInput.message,
-      p_quantity: parsedInput.quantity ?? null,
+      p_quantity: parsedInput.quantity ?? 1,
       p_contact_email: parsedInput.contactEmail,
-      p_title: parsedInput.title ?? null,
+      p_title: parsedInput.title || undefined,
     });
 
     if (error) throw new Error(error.message);
