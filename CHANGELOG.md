@@ -1,5 +1,11 @@
 # [2.2.0](https://github.com/imbhargav5/nextbase-nextjs-supabase-starter/compare/v2.1.0...v2.2.0) (2023-11-25)
 
+## 2.3.0
+
+### Minor Changes
+
+- [#162](https://github.com/imbhargav5/nextbase-nextjs-supabase-starter/pull/162) [`d9f0066`](https://github.com/imbhargav5/nextbase-nextjs-supabase-starter/commit/d9f0066fe2975fc4bd048988a4f1f217ad335351) Thanks [@imbhargav5](https://github.com/imbhargav5)! - Upgrade to Next.js 16.3 with `cacheComponents` and `partialPrefetching` enabled, bump Tailwind CSS v4 and shadcn/ui dependencies, upgrade TypeScript to 7, and add React Bits animated components (`BlurText`, `ShinyText`, `SpotlightCard`) to the home and login pages.
+
 ### Bug Fixes
 
 - **build:** fixes ([d50ee82](https://github.com/imbhargav5/nextbase-nextjs-supabase-starter/commit/d50ee82a3d766b584a2fc66ea1a4b9409f83e8fc))
