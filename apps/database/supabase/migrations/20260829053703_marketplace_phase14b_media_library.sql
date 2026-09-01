@@ -56,6 +56,10 @@ alter table "public"."supplier_media_assets" enable row level security;
 
 alter table "public"."supplier_media_folders" enable row level security;
 
+drop policy if exists "supplier_certificates_select_public" on "public"."supplier_certificates";
+
+drop policy if exists "supplier_gallery_select_public" on "public"."supplier_gallery";
+
 alter table "public"."supplier_certificates" alter column status type "public"."media_review_status" using status::text::"public"."media_review_status";
 
 alter table "public"."supplier_gallery" alter column status type "public"."media_review_status" using status::text::"public"."media_review_status";
@@ -63,6 +67,20 @@ alter table "public"."supplier_gallery" alter column status type "public"."media
 alter table "public"."supplier_certificates" alter column "status" set default 'pending'::public.media_review_status;
 
 alter table "public"."supplier_gallery" alter column "status" set default 'pending'::public.media_review_status;
+
+create policy "supplier_certificates_select_public"
+  on "public"."supplier_certificates"
+  as permissive
+  for select
+  to public
+using ((status = 'approved'::public.media_review_status));
+
+create policy "supplier_gallery_select_public"
+  on "public"."supplier_gallery"
+  as permissive
+  for select
+  to public
+using ((status = 'approved'::public.media_review_status));
 
 drop type "public"."media_review_status__old_version_to_be_dropped";
 
