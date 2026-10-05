@@ -15,17 +15,17 @@
     "@sourcebyjay/observability": "workspace:*",
     "@sourcebyjay/types": "workspace:*",
     "@sentry/nextjs": "^10.12.0",
-    "@supabase/ssr": "^0.12.4",
-    "@supabase/supabase-js": "^2.112.3",
-    "next": "^16.3.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.2",
+    "next": "^16.3.8",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@nextbase/typescript-config": "workspace:*",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "oxlint": "^1.78.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "oxlint": "^1.86.0",
     "typescript": "^7.0.2"
   }
 }
